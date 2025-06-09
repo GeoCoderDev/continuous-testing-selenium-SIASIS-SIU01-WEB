@@ -1,5 +1,4 @@
 package Pages;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -10,12 +9,12 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
 public class LoginPage {
-    private WebDriver driver;
-    private Dotenv dotenv;
+    final private WebDriver driver;
+    final private Dotenv dotenv;
 
-    private By usernameField = By.name("Nombre_Usuario");
-    private By passwordField = By.name("Contraseña");
-    private By loginButton = By.xpath("//button[text()='Ingresar']");
+    final private By usernameField = By.name("Nombre_Usuario");
+    final private By passwordField = By.name("Contraseña");
+    final private By loginButton = By.xpath("//button[text()='Ingresar']");
 
     public LoginPage(WebDriver driver) {
         this.driver = driver;

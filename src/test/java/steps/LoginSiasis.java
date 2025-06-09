@@ -7,24 +7,18 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import io.github.cdimascio.dotenv.Dotenv;
-import org.openqa.selenium.By;
+
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import java.time.Duration;
+
 
 public class LoginSiasis {
-    private Dotenv dotenv;
     private WebDriver driver;
     private LoginPage loginPage;
     private String rolSeleccionado;
 
     @Before
     public void setup() {
-        dotenv = Dotenv.load();
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         driver.manage().window().maximize();
@@ -48,7 +42,7 @@ public class LoginSiasis {
     }
 
     @Then("Accedo al sistema como {string}")
-    public void accedoAlSistemaComo(String rol) {
+    public void accedoAlSistemaComo() {
         loginPage.clickLoginButton();
     }
 
