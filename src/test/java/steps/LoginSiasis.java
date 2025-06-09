@@ -1,4 +1,5 @@
 package steps;
+import Pages.LoginPage;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
@@ -17,13 +18,9 @@ import java.time.Duration;
 
 public class LoginSiasis {
     private Dotenv dotenv;
+    private WebDriver driver;
+    private LoginPage loginPage;
     private String rolSeleccionado;
-    WebDriver driver;
-
-    private WebElement esperarElementoVisible(By locator) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
-    }
 
     @Before
     public void setup() {
@@ -31,42 +28,28 @@ public class LoginSiasis {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         driver.manage().window().maximize();
+        loginPage = new LoginPage(driver);
     }
 
     @Given("Estoy en la página de login")
     public void estoyEnLaPáginaDeLogin() {
-        String url = dotenv.get("DEV_SIASIS_URL");
-        driver.get(url);
+        loginPage.navigateToLoginPage();
     }
 
     @When("Selecciono el rol {string}")
-    public void seleccionoElRol(String arg) {
-        this.rolSeleccionado = arg;
-        WebElement rol = driver.findElement(By.xpath("//span[text()='" + arg + "']"));
-        rol.click();
+    public void seleccionoElRol(String rol) {
+        this.rolSeleccionado = rol;
+        loginPage.selectRole(rol);
     }
 
     @And("Ingreso mi nombre de usuario y contraseña")
     public void ingresoMiNombreDeUsuarioYContraseña() {
-        String rolFormateado = rolSeleccionado.toUpperCase().replaceAll("[^A-Za-z0-9]", "_");
-        String username = dotenv.get(rolFormateado + "_USERNAME");
-        String password = dotenv.get(rolFormateado + "_PASSWORD");
-        System.out.println("Clave de entorno: " + rolFormateado + "_USERNAME");
-
-        if (username != null && password != null) {
-            WebElement usernameField = esperarElementoVisible(By.name("Nombre_Usuario"));
-            WebElement passwordField = driver.findElement(By.name("Contraseña"));
-            usernameField.sendKeys(username);
-            passwordField.sendKeys(password);
-        } else {
-            System.out.println("Credenciales no encontradas para el rol: " + rolSeleccionado);
-        }
+        loginPage.enterCredentials(rolSeleccionado);
     }
 
     @Then("Accedo al sistema como {string}")
     public void accedoAlSistemaComo(String rol) {
-        WebElement botonIngresar = driver.findElement(By.xpath("//button[text()='Ingresar']"));
-        botonIngresar.click();
+        loginPage.clickLoginButton();
     }
 
     @After
