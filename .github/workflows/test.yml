@@ -1,0 +1,39 @@
+name: Selenium JUnit CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Maven dependencies
+        run: mvn install -DskipTests=true
+
+      - name: Run tests with Maven
+        run: mvn clean test
+
+      - name: Generar reporte HTML de Cucumber
+        run: mvn net.masterthought:maven-cucumber-reporting:generate
+
+      - name: Subir reporte HTML de Cucumber
+        uses: actions/upload-artifact@v3
+        with:
+          name: cucumber-html-report
+          path: target/cucumber-html-reports
