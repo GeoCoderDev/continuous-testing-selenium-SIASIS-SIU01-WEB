@@ -24,7 +24,7 @@ jobs:
           java-version: '17'
 
       - name: Install Maven dependencies
-        run: mvn install -DskipTests=true
+        run: mvn install 
 
       - name: Run tests with Maven
         run: mvn clean test
