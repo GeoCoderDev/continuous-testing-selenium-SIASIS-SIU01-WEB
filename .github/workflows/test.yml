@@ -23,11 +23,11 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
           
-      - name: Run tests with Maven
+      - name: Correr los test
         run: mvn clean test
 
       - name: Subir reporte HTML de Cucumber
         uses: actions/upload-artifact@v4
         with:
           name: cucumber-html-report
-          path: target/cucumber-html-reports
+          path: target
