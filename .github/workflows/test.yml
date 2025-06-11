@@ -30,8 +30,11 @@ jobs:
         run: mvn clean test
 
       - name: Generar reporte HTML de Cucumber
-        run: mvn net.masterthought:maven-cucumber-reporting:generate
-
+        run: mvn net.masterthought:maven-cucumber-reporting:generate \
+          -DprojectName=SIASIS_SELENIUM \
+          -DoutputDirectory=target/cucumber-html-reports \
+          -DinputDirectory=target/cucumber \
+          -DjsonFiles=report.json
       - name: Subir reporte HTML de Cucumber
         uses: actions/upload-artifact@v4
         with:
