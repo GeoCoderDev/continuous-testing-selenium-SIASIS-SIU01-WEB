@@ -7,6 +7,7 @@ import io.cucumber.java.en.Then;
 public class LoginSiasis {
 
     private final LoginPage loginPage;
+
     public LoginSiasis() {
         this.loginPage = new LoginPage(Hooks.driver);
     }

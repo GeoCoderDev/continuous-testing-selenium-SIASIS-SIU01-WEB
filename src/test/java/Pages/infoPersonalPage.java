@@ -15,7 +15,7 @@ public class infoPersonalPage {
     private final By inputCelular = By.name("Celular");
     private final By optionGenero = By.cssSelector("select[name='Genero']");
     private final By bttnGuardarCambios = By.xpath("//button[text()='Guardar Cambios']");
-
+    private  String dni;
 
     public infoPersonalPage(WebDriver driver) {
         this.driver = driver;
@@ -36,14 +36,20 @@ public class infoPersonalPage {
 
     }
 
-    public void editarDNI(String dni){
+    public void againMisDatos(){
+        WebElement editarDatos = driver.findElement(bttnEditarDatos);
+        editarDatos.click();
+    }
 
+    public void editarDNI(String dni){
         WebElement dniField = driver.findElement(inputDNI);
         dniField.clear();
         dniField.sendKeys(dni);
+        this.dni = dni;
     }
 
     public void editarNombres(String nombres){
+
         WebElement nombresField = driver.findElement(inputNombres);
         nombresField.clear();
         nombresField.sendKeys(nombres);
@@ -71,15 +77,13 @@ public class infoPersonalPage {
     public void guardarCambios(){
         WebElement guardarButton = driver.findElement(bttnGuardarCambios);
         guardarButton.click();
-    }
-
-    public void editarPerfil(String dni, String nombres, String apellidos, String celular, String genero){
-        editarDNI(dni);
-        editarNombres(nombres);
-        editarApellidos(apellidos);
-        editarCelular(celular);
-        seleccionarGenero(genero);
-        guardarCambios();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement verificarDatos = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[contains(text(), '" + dni + "')]")));
+        if (verificarDatos != null) {
+            System.out.println("Cambio de DNI guardado correctamente.");
+        } else {
+            System.out.println("Error al guardar el cambio de DNI.");
+        }
     }
 
 

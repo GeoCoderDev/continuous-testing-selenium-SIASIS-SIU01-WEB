@@ -1,6 +1,4 @@
-// src/test/java/steps/Hooks.java
 package steps;
-
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import org.openqa.selenium.WebDriver;

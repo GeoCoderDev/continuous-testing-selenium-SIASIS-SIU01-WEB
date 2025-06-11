@@ -21,12 +21,8 @@ Feature: Login al sistema SIAIS
     And Ingreso mi nombre de usuario y contraseña
     Then Accedo al sistema como "Directivo"
     When Estoy en la página de edición de perfil
-    And Edito mis datos personales con los valores:
-      | campo            | valor                   |
-      | Nombre           | Jose          |
-      | Apellidos        | Cil        |
-      | Género           | Masculino                |
-      | Celular          | 968400739               |
-    Then Mi perfil se actualiza correctamente para el rol "Directivo"
-
+    And Edito mis datos personales con los valores aleatorios
+    Then Verifico que se han guardado los cambios
+    And Restauro los datos originales
+    Then verifico que los datos originales son correctos
 
