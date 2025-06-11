@@ -33,7 +33,7 @@ jobs:
         run: mvn net.masterthought:maven-cucumber-reporting:generate
 
       - name: Subir reporte HTML de Cucumber
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cucumber-html-report
           path: target/cucumber-html-reports
