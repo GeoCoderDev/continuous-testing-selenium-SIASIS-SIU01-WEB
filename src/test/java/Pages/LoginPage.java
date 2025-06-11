@@ -5,16 +5,15 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.time.Duration;
 
 public class LoginPage {
-    final private WebDriver driver;
-    final private Dotenv dotenv;
-
-    final private By usernameField = By.name("Nombre_Usuario");
-    final private By passwordField = By.name("Contraseña");
-    final private By loginButton = By.xpath("//button[text()='Ingresar']");
+    private final WebDriver driver;
+    private final Dotenv dotenv;
+    private final By welcomeMessage = By.xpath("//h1[text()='¡Hola!']");
+    private final By usernameField = By.name("Nombre_Usuario");
+    private final By passwordField = By.name("Contraseña");
+    private final By loginButton = By.xpath("//button[text()='Ingresar']");
 
     public LoginPage(WebDriver driver) {
         this.driver = driver;
@@ -27,7 +26,7 @@ public class LoginPage {
     }
 
     public void selectRole(String rol) {
-        By rolSelector = By.xpath("//span[text()='" + rol + "']");  // Aquí construimos dinámicamente el XPath
+        By rolSelector = By.xpath("//span[text()='" + rol + "']");
         WebElement roleElement = driver.findElement(rolSelector);
         roleElement.click();
     }
@@ -48,5 +47,8 @@ public class LoginPage {
 
     public void clickLoginButton() {
         driver.findElement(loginButton).click();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(welcomeMessage));
     }
+
 }
