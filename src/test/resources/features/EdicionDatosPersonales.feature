@@ -2,8 +2,6 @@ Feature: Edicion de Datos Personales por Rol
   Background:
     Given Estoy en la página de login
 
-
-
   @EdicionDatosPersonales @Directivo
   Scenario: Editar perfil con el rol Directivo
     Given Selecciono el rol "Directivo"
