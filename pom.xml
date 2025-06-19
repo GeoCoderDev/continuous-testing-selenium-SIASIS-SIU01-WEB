@@ -13,6 +13,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -26,6 +27,18 @@
                             cucumber.junit-platform.naming-strategy=long
                         </configurationParameters>
                     </properties>
+                    <!-- CONFIGURACIÓN CRÍTICA AÑADIDA -->
+                    <systemPropertyVariables>
+                        <cucumber.filter.tags>${cucumber.filter.tags}</cucumber.filter.tags>
+                        <cucumber.options>${cucumber.options}</cucumber.options>
+                    </systemPropertyVariables>
+                    <!-- INCLUIR ARCHIVOS DE TEST -->
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*Tests.java</include>
+                        <include>**/Test*.java</include>
+                        <include>**/RunnerTest.java</include>
+                    </includes>
                 </configuration>
             </plugin>
 
@@ -40,24 +53,23 @@
                         <goals>
                             <goal>generate</goal>
                         </goals>
-                    <configuration>
-                        <projectName>SIASIS_SELENIUM</projectName>
-                        <skip>false</skip>
-                        <outputDirectory>${project.build.directory}</outputDirectory>
-                        <inputDirectory>${project.build.directory}/cucumber</inputDirectory>
-                        <jsonFiles>
-                            <param>**/*.json</param>
-                        </jsonFiles>
-                        <mergeFeaturesById>false</mergeFeaturesById>
-                        <mergeFeaturesWithRetest>false</mergeFeaturesWithRetest>
-                        <checkBuildResult>false</checkBuildResult>
-                    </configuration>
+                        <configuration>
+                            <projectName>SIASIS_SELENIUM</projectName>
+                            <skip>false</skip>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <inputDirectory>${project.build.directory}/cucumber</inputDirectory>
+                            <jsonFiles>
+                                <param>**/*.json</param>
+                            </jsonFiles>
+                            <mergeFeaturesById>false</mergeFeaturesById>
+                            <mergeFeaturesWithRetest>false</mergeFeaturesWithRetest>
+                            <checkBuildResult>false</checkBuildResult>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
-
 
     <dependencies>
         <dependency>
@@ -134,4 +146,3 @@
     </dependencies>
 
 </project>
-
