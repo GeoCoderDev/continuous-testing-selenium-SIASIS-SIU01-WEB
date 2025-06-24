@@ -162,11 +162,13 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action - SIASIS Tests"
 
-          git fetch origin || true
+          # 📦 Copiamos los reportes actuales al directorio temporal antes de cambiar de rama
+          echo "📦 Guardando reports/${{ steps.params.outputs.env_name }} e index.html en $RUNNER_TEMP..."
+          mkdir -p $RUNNER_TEMP/reports/${{ steps.params.outputs.env_name }}
+          cp -r reports/${{ steps.params.outputs.env_name }} $RUNNER_TEMP/reports/
+          cp index.html $RUNNER_TEMP/
 
-          # 🗑️ Limpiar archivos actuales para evitar conflictos
-          rm -f index.html || true
-          rm -rf reports/${{ steps.params.outputs.env_name }} || true
+          git fetch origin || true
 
           if git ls-remote --exit-code --heads origin test-results > /dev/null 2>&1; then
             echo "✅ Rama test-results existe, haciendo checkout..."
@@ -179,15 +181,19 @@ jobs:
             git commit --allow-empty -m "🆕 Inicializar rama test-results"
           fi
 
-          # ✅ Copiando los artefactos para este entorno
+          # ✅ Ahora copiamos de regreso los archivos guardados
+          echo "📥 Restaurando files desde $RUNNER_TEMP..."
+
           if [ "${{ steps.params.outputs.env_name }}" = "dev" ]; then
             rm -rf reports/dev
-            cp -r ../reports/dev ./reports/
-            cp ../index.html ./
+            mkdir -p reports
+            cp -r $RUNNER_TEMP/reports/dev reports/
+            cp $RUNNER_TEMP/index.html ./
           elif [ "${{ steps.params.outputs.env_name }}" = "cert" ]; then
             rm -rf reports/cert
-            cp -r ../reports/cert ./reports/
-            cp ../index.html ./
+            mkdir -p reports
+            cp -r $RUNNER_TEMP/reports/cert reports/
+            cp $RUNNER_TEMP/index.html ./
           fi
 
           git add reports/
