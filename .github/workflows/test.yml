@@ -162,14 +162,20 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action - SIASIS Tests"
 
-          # 📦 Copiamos los reportes actuales al directorio temporal antes de cambiar de rama
+          # 1️⃣ Copiamos primero los reportes actuales
           echo "📦 Guardando reports/${{ steps.params.outputs.env_name }} e index.html en $RUNNER_TEMP..."
           mkdir -p $RUNNER_TEMP/reports/${{ steps.params.outputs.env_name }}
           cp -r reports/${{ steps.params.outputs.env_name }} $RUNNER_TEMP/reports/
           cp index.html $RUNNER_TEMP/
 
+          # 2️⃣ Limpiamos los archivos actuales para evitar conflictos
+          echo "🗑️ Limpiando directorio para permitir checkout..."
+          rm -f index.html || true
+          rm -rf reports || true
+
           git fetch origin || true
 
+          # 3️⃣ Ahora sí hacemos checkout
           if git ls-remote --exit-code --heads origin test-results > /dev/null 2>&1; then
             echo "✅ Rama test-results existe, haciendo checkout..."
             git checkout test-results
@@ -181,7 +187,7 @@ jobs:
             git commit --allow-empty -m "🆕 Inicializar rama test-results"
           fi
 
-          # ✅ Ahora copiamos de regreso los archivos guardados
+          # 4️⃣ Ahora restauramos los reportes para el entorno correspondiente
           echo "📥 Restaurando files desde $RUNNER_TEMP..."
 
           if [ "${{ steps.params.outputs.env_name }}" = "dev" ]; then
@@ -199,6 +205,7 @@ jobs:
           git add reports/
           git add index.html
 
+          # 5️⃣ Si hay cambios, hacemos commit
           if git diff --staged --quiet; then
             echo "⚠️ No hay cambios para commitear."
           else
