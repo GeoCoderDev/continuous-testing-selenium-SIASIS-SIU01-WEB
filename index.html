@@ -1,76 +1,562 @@
 <!DOCTYPE html>
-                                    <html lang="es">
-                                    <head>
-                                    <meta charset="UTF-8">
-                                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                    <title>? SIASIS Testing Dashboard</title>
-                                    <style>
-                                    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
-                                    .container { background: white; padding: 30px; border-radius: 15px; max-width: 900px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-                                    h1 { color: #2c3e50; text-align: center; margin-bottom: 30px; }
-                                    .environment { margin: 20px 0; padding: 20px; border-radius: 10px; transition: transform 0.3s ease; }
-                                    .environment:hover { transform: translateY(-5px); }
-                                    .dev { background: #d4edda; border-left: 4px solid #28a745; }
-                                    .cert { background: #fff3cd; border-left: 4px solid #ffc107; }
-                                    .target { background: #d1ecf1; border-left: 4px solid #17a2b8; }
-                                    .current { background: #e7f3ff; border: 3px solid #007bff; box-shadow: 0 5px 15px rgba(0,123,255,0.3); }
-                                    .links { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-                                    .link { padding: 10px 15px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; transition: all 0.3s ease; }
-                                    .link:hover { background: #0056b3; transform: translateY(-2px); }
-                                    .current-badge { background: #28a745; color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.9em; margin-left: 10px; }
-                                    .status-info { background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #6c757d; }
-                                    .commands { background: #2c3e50; color: white; padding: 15px; border-radius: 8px; margin: 20px 0; }
-                                    .commands code { background: #34495e; padding: 2px 5px; border-radius: 3px; }
-                                    .security-note { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 15px; border-radius: 8px; margin: 20px 0; }
-                                    </style>
-                                    </head>
-                                    <body>
-                                    <div class="container">
-                                    <h1>? SIASIS Testing Dashboard</h1>
-                                    <p><strong>Sistema de Control de Asistencia - I.E. 20935 Asunci�n 8</strong></p>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 SIASIS - Dashboard de Reportes de Testing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-                                    <div class="status-info">
-                                    <strong>? �ltimo reporte generado:</strong> 2025-06-23 21:30:14<br>
-                                    <strong>? Entorno actual:</strong> <span class="current-badge">${detected.environment.toUpperCase()}</span>
-                                    </div>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-                                    <div class="security-note">
-                                    <strong>? Seguridad:</strong> Las credenciales se manejan de forma segura via variables de entorno. No se almacenan en archivos de reportes.
-                                    </div>
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
 
-                                    <div class="environment dev ${detected.environment == 'dev' ? 'current' : ''}">
-                                    <h3>?? Entorno de Desarrollo (DEV) ${detected.environment == 'dev' ? '<span class="current-badge">ACTUAL</span>' : ''}</h3>
-                                    <div class="links">
-                                    <a href="reports/dev/cucumber-reports/index.html" class="link">? Cucumber Reports</a>
-                                    <a href="reports/dev/surefire-reports/" class="link">? Surefire Reports</a>
-                                    <a href="reports/dev/test-metadata.txt" class="link">?? Metadatos</a>
-                                    </div>
-                                    </div>
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
 
-                                    <div class="environment cert ${detected.environment == 'cert' ? 'current' : ''}">
-                                    <h3>? Entorno de Certificaci�n (CERT) ${detected.environment == 'cert' ? '<span class="current-badge">ACTUAL</span>' : ''}</h3>
-                                    <div class="links">
-                                    <a href="reports/cert/cucumber-reports/index.html" class="link">? Cucumber Reports</a>
-                                    <a href="reports/cert/surefire-reports/" class="link">? Surefire Reports</a>
-                                    <a href="reports/cert/test-metadata.txt" class="link">?? Metadatos</a>
-                                    </div>
-                                    </div>
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
 
-                                    <div class="environment target">
-                                    <h3>? Target Original</h3>
-                                    <p>Reportes est�ndar de Maven (siempre disponibles)</p>
-                                    <div class="links">
-                                    <a href="target/cucumber-reports/index.html" class="link">? Cucumber Reports</a>
-                                    <a href="target/surefire-reports/" class="link">? Surefire Reports</a>
-                                    </div>
-                                    </div>
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
 
-                                    <div class="commands">
-                                    <h4>? Comandos para ejecutar tests:</h4>
-                                    <p><strong>DEV:</strong> <code>$env:ENTORNO="D"; mvn clean verify</code></p>
-                                    <p><strong>CERT:</strong> <code>$env:ENTORNO="C"; mvn clean verify</code></p>
-                                    <p><strong>Con tags:</strong> <code>$env:ENTORNO="C"; mvn clean verify "-Dcucumber.filter.tags=@Login"</code></p>
-                                    </div>
-                                    </div>
-                                    </body>
-                                    </html>
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: slideDown 1s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #fff, #f0f8ff, #e6f3ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .timestamp {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .environment-detector {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .environment-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            color: white;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .env-badge {
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: pulse 2s infinite;
+        }
+
+        .env-dev { background: linear-gradient(45deg, #4CAF50, #45a049); }
+        .env-cert { background: linear-gradient(45deg, #ff9800, #f57c00); }
+        .env-current { background: linear-gradient(45deg, #2196F3, #1976D2); }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .report-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 1s ease-out forwards;
+            opacity: 0;
+        }
+
+        .report-card:nth-child(1) { animation-delay: 0.2s; }
+        .report-card:nth-child(2) { animation-delay: 0.4s; }
+        .report-card:nth-child(3) { animation-delay: 0.6s; }
+        .report-card:nth-child(4) { animation-delay: 0.8s; }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .report-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 45px rgba(0,0,0,0.2);
+        }
+
+        .report-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .report-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .report-icon {
+            font-size: 2.5rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .report-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .report-description {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .report-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .report-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            text-decoration: none;
+            color: #495057;
+            transition: all 0.3s ease;
+            border: 1px solid #dee2e6;
+        }
+
+        .report-link:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .link-icon {
+            font-size: 1.2rem;
+            width: 25px;
+        }
+
+        .environment-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .env-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .env-button:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+
+        .env-button.active {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .footer {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .refresh-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.1) rotate(180deg);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.4);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2.5rem; }
+            .reports-grid { grid-template-columns: 1fr; }
+            .container { padding: 15px; }
+            .report-card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+
+<div class="container">
+    <header class="header">
+        <h1>🚀 SIASIS Testing Dashboard</h1>
+        <p>Sistema de Control de Asistencia - I.E. 20935 Asunción 8</p>
+        <p>📊 Portal de Reportes de Testing Automatizado</p>
+        <div class="timestamp">📅 Último reporte generado: <span id="timestamp"></span></div>
+    </header>
+
+    <div class="environment-detector">
+        <div class="environment-status">
+            <span>🌍 Entorno Actual:</span>
+            <span id="environmentBadge" class="env-badge env-current">AMBIENTE DETECTADO</span>
+        </div>
+
+        <div class="environment-selector">
+            <button class="env-button" onclick="switchEnvironment('dev')" id="btnDev">
+                🛠️ Desarrollo
+            </button>
+            <button class="env-button" onclick="switchEnvironment('cert')" id="btnCert">
+                🎯 Certificación
+            </button>
+        </div>
+    </div>
+
+    <div class="reports-grid">
+        <!-- Cucumber Reports -->
+        <div class="report-card">
+            <div class="report-header">
+                <div class="report-icon">🥒</div>
+                <div>
+                    <div class="report-title">Reportes de Cucumber</div>
+                    <div class="report-description">Reportes de características y escenarios BDD</div>
+                </div>
+            </div>
+            <div class="report-links">
+                <a href="#" class="report-link" id="cucumberMain">
+                    <span class="link-icon">📋</span>
+                    <span>Reporte Principal</span>
+                </a>
+                <a href="#" class="report-link" id="cucumberHtml">
+                    <span class="link-icon">📈</span>
+                    <span>HTML Reports</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Surefire Reports -->
+        <div class="report-card">
+            <div class="report-header">
+                <div class="report-icon">🧪</div>
+                <div>
+                    <div class="report-title">Reportes de Surefire</div>
+                    <div class="report-description">Reportes de ejecución de tests JUnit</div>
+                </div>
+            </div>
+            <div class="report-links">
+                <a href="#" class="report-link" id="surefireReports">
+                    <span class="link-icon">📄</span>
+                    <span>Reportes XML/TXT</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Metadatos -->
+        <div class="report-card">
+            <div class="report-header">
+                <div class="report-icon">📦</div>
+                <div>
+                    <div class="report-title">Metadatos</div>
+                    <div class="report-description">Información de ejecución y configuración</div>
+                </div>
+            </div>
+            <div class="report-links">
+                <a href="#" class="report-link" id="testMetadata">
+                    <span class="link-icon">ℹ️</span>
+                    <span>Test Metadata</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Utilidades -->
+        <div class="report-card">
+            <div class="report-header">
+                <div class="report-icon">⚙️</div>
+                <div>
+                    <div class="report-title">Utilidades</div>
+                    <div class="report-description">Herramientas y comandos útiles</div>
+                </div>
+            </div>
+            <div class="report-links">
+                <a href="#" class="report-link" onclick="showCommands()">
+                    <span class="link-icon">💻</span>
+                    <span>Comandos Maven</span>
+                </a>
+                <a href="#" class="report-link" onclick="showHelp()">
+                    <span class="link-icon">❓</span>
+                    <span>Ayuda</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>🏫 I.E. 20935 Asunción 8 - Imperial, Cañete</p>
+        <p>🔧 Sistema de Testing Automatizado con Selenium + Cucumber</p>
+        <p>🚀 <strong>Comandos:</strong> DEV: <code>$env:ENTORNO="D"; mvn clean verify</code> | CERT: <code>$env:ENTORNO="C"; mvn clean verify</code></p>
+    </footer>
+</div>
+
+<button class="refresh-btn" onclick="updateTimestamp()" title="Actualizar timestamp">
+    🔄
+</button>
+
+<script>
+    let currentEnvironment = 'dev'; // Por defecto
+
+    // Crear estrellas animadas
+    function createStars() {
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            starsContainer.appendChild(star);
+        }
+    }
+
+    // Cambiar entorno
+    function switchEnvironment(env) {
+        currentEnvironment = env;
+
+        // Actualizar botones
+        document.querySelectorAll('.env-button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.getElementById('btn' + env.charAt(0).toUpperCase() + env.slice(1)).classList.add('active');
+
+        // Actualizar badge
+        const badge = document.getElementById('environmentBadge');
+        badge.textContent = env === 'dev' ? 'DESARROLLO 🛠️' : 'CERTIFICACIÓN 🎯';
+        badge.className = 'env-badge env-' + env;
+
+        // Actualizar enlaces
+        updateLinks();
+    }
+
+    // Actualizar enlaces según el entorno
+    function updateLinks() {
+        const basePath = `reports/${currentEnvironment}/`;
+
+        document.getElementById('cucumberMain').href = basePath + 'cucumber-reports/index.html';
+        document.getElementById('cucumberHtml').href = basePath + 'cucumber-html-reports/';
+        document.getElementById('surefireReports').href = basePath + 'surefire-reports/';
+        document.getElementById('testMetadata').href = basePath + 'test-metadata.txt';
+    }
+
+    // Actualizar timestamp
+    function updateTimestamp() {
+        const timestamp = document.getElementById('timestamp');
+        const now = new Date();
+        timestamp.textContent = now.toLocaleString('es-ES', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+
+        // Efecto de rotación en el botón
+        const btn = document.querySelector('.refresh-btn');
+        btn.style.transform = 'scale(1.1) rotate(360deg)';
+        setTimeout(() => {
+            btn.style.transform = 'scale(1) rotate(0deg)';
+        }, 1000);
+    }
+
+    // Mostrar comandos
+    function showCommands() {
+        const commands = `
+🚀 COMANDOS MAVEN PARA SIASIS
+
+📊 EJECUTAR TESTS:
+• Desarrollo:     $env:ENTORNO="D"; mvn clean verify
+• Certificación:  $env:ENTORNO="C"; mvn clean verify
+• Solo tests:     mvn test
+• Limpiar:        mvn clean
+
+🔧 REPORTES:
+• Los reportes se generan automáticamente en reports/dev/ o reports/cert/
+• Cucumber HTML: cucumber-reports/index.html
+• Surefire: surefire-reports/
+• Metadatos: test-metadata.txt
+
+💡 TIPS:
+• Usa diferentes entornos para comparar resultados
+• Los reportes se mantienen separados por entorno
+• Revisa test-metadata.txt para detalles de ejecución
+        `;
+        alert(commands);
+    }
+
+    // Mostrar ayuda
+    function showHelp() {
+        const help = `
+🎯 SIASIS TESTING DASHBOARD - AYUDA
+
+📋 NAVEGACIÓN:
+• Usa los botones Desarrollo/Certificación para cambiar entorno
+• Cada entorno mantiene sus propios reportes
+• Los enlaces se actualizan automáticamente
+
+📊 TIPOS DE REPORTES:
+• Cucumber: Reportes BDD con escenarios detallados
+• Surefire: Reportes JUnit con resultados de tests
+• Metadatos: Información de configuración y ejecución
+
+🔄 ACTUALIZACIÓN:
+• El botón 🔄 actualiza el timestamp
+• Los reportes se regeneran al ejecutar mvn clean verify
+• Cada entorno (DEV/CERT) tiene reportes independientes
+
+⚡ ESTRUCTURA:
+reports/
+├── dev/     (ENTORNO="D")
+│   ├── cucumber-reports/
+│   ├── surefire-reports/
+│   └── test-metadata.txt
+└── cert/    (ENTORNO="C")
+├── cucumber-reports/
+├── surefire-reports/
+└── test-metadata.txt
+
+💡 ¿PROBLEMAS?
+• Verifica que hayas ejecutado mvn clean verify
+• Asegúrate de estar en el directorio correcto
+• Comprueba que la variable ENTORNO esté configurada
+        `;
+        alert(help);
+    }
+
+    // Inicialización
+    document.addEventListener('DOMContentLoaded', function() {
+        createStars();
+        updateTimestamp();
+        switchEnvironment('dev'); // Empezar con desarrollo
+    });
+
+    // Auto-actualizar timestamp cada minuto
+    setInterval(updateTimestamp, 60000);
+</script>
+</body>
+</html>

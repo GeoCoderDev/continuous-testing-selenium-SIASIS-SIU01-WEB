@@ -71,9 +71,6 @@
             </plugin>
 
             <!-- Plugin para copiar reportes por entorno -->
-
-            <!-- REEMPLAZA COMPLETAMENTE el plugin maven-antrun-plugin en tu pom.xml con esto: -->
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -81,7 +78,7 @@
                 <executions>
                     <execution>
                         <id>copy-reports-to-environment-folder</id>
-                        <phase>test</phase>
+                        <phase>verify</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
@@ -166,7 +163,7 @@
                                     </fileset>
                                 </copy>
 
-                                <!-- Crear un archivo de metadatos SEGURO -->
+                                <!-- Crear un archivo de metadatos SEGURO (SIN CREDENCIALES) -->
                                 <tstamp>
                                     <format property="timestamp" pattern="yyyy-MM-dd HH:mm:ss"/>
                                     <format property="timestamp.iso" pattern="yyyy-MM-dd'T'HH:mm:ss"/>
@@ -203,96 +200,19 @@
                                     🔒 Este archivo solo contiene metadatos de la ejecución
                                 </echo>
 
-                                <!-- Crear dashboard básico SEGURO -->
-                                <echo file="${project.basedir}/index.html">&lt;!DOCTYPE html&gt;
-                                    &lt;html lang="es"&gt;
-                                    &lt;head&gt;
-                                    &lt;meta charset="UTF-8"&gt;
-                                    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
-                                    &lt;title&gt;🚀 SIASIS Testing Dashboard&lt;/title&gt;
-                                    &lt;style&gt;
-                                    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
-                                    .container { background: white; padding: 30px; border-radius: 15px; max-width: 900px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-                                    h1 { color: #2c3e50; text-align: center; margin-bottom: 30px; }
-                                    .environment { margin: 20px 0; padding: 20px; border-radius: 10px; transition: transform 0.3s ease; }
-                                    .environment:hover { transform: translateY(-5px); }
-                                    .dev { background: #d4edda; border-left: 4px solid #28a745; }
-                                    .cert { background: #fff3cd; border-left: 4px solid #ffc107; }
-                                    .target { background: #d1ecf1; border-left: 4px solid #17a2b8; }
-                                    .current { background: #e7f3ff; border: 3px solid #007bff; box-shadow: 0 5px 15px rgba(0,123,255,0.3); }
-                                    .links { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-                                    .link { padding: 10px 15px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; transition: all 0.3s ease; }
-                                    .link:hover { background: #0056b3; transform: translateY(-2px); }
-                                    .current-badge { background: #28a745; color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.9em; margin-left: 10px; }
-                                    .status-info { background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #6c757d; }
-                                    .commands { background: #2c3e50; color: white; padding: 15px; border-radius: 8px; margin: 20px 0; }
-                                    .commands code { background: #34495e; padding: 2px 5px; border-radius: 3px; }
-                                    .security-note { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 15px; border-radius: 8px; margin: 20px 0; }
-                                    &lt;/style&gt;
-                                    &lt;/head&gt;
-                                    &lt;body&gt;
-                                    &lt;div class="container"&gt;
-                                    &lt;h1&gt;🚀 SIASIS Testing Dashboard&lt;/h1&gt;
-                                    &lt;p&gt;&lt;strong&gt;Sistema de Control de Asistencia - I.E. 20935 Asunción 8&lt;/strong&gt;&lt;/p&gt;
-
-                                    &lt;div class="status-info"&gt;
-                                    &lt;strong&gt;📊 Último reporte generado:&lt;/strong&gt; ${timestamp}&lt;br&gt;
-                                    &lt;strong&gt;🎯 Entorno actual:&lt;/strong&gt; &lt;span class="current-badge"&gt;${detected.environment.toUpperCase()}&lt;/span&gt;
-                                    &lt;/div&gt;
-
-                                    &lt;div class="security-note"&gt;
-                                    &lt;strong&gt;🔒 Seguridad:&lt;/strong&gt; Las credenciales se manejan de forma segura via variables de entorno. No se almacenan en archivos de reportes.
-                                    &lt;/div&gt;
-
-                                    &lt;div class="environment dev ${detected.environment == 'dev' ? 'current' : ''}"&gt;
-                                    &lt;h3&gt;🛠️ Entorno de Desarrollo (DEV) ${detected.environment == 'dev' ? '&lt;span class="current-badge"&gt;ACTUAL&lt;/span&gt;' : ''}&lt;/h3&gt;
-                                    &lt;div class="links"&gt;
-                                    &lt;a href="reports/dev/cucumber-reports/index.html" class="link"&gt;📊 Cucumber Reports&lt;/a&gt;
-                                    &lt;a href="reports/dev/surefire-reports/" class="link"&gt;🧪 Surefire Reports&lt;/a&gt;
-                                    &lt;a href="reports/dev/test-metadata.txt" class="link"&gt;ℹ️ Metadatos&lt;/a&gt;
-                                    &lt;/div&gt;
-                                    &lt;/div&gt;
-
-                                    &lt;div class="environment cert ${detected.environment == 'cert' ? 'current' : ''}"&gt;
-                                    &lt;h3&gt;🎯 Entorno de Certificación (CERT) ${detected.environment == 'cert' ? '&lt;span class="current-badge"&gt;ACTUAL&lt;/span&gt;' : ''}&lt;/h3&gt;
-                                    &lt;div class="links"&gt;
-                                    &lt;a href="reports/cert/cucumber-reports/index.html" class="link"&gt;📊 Cucumber Reports&lt;/a&gt;
-                                    &lt;a href="reports/cert/surefire-reports/" class="link"&gt;🧪 Surefire Reports&lt;/a&gt;
-                                    &lt;a href="reports/cert/test-metadata.txt" class="link"&gt;ℹ️ Metadatos&lt;/a&gt;
-                                    &lt;/div&gt;
-                                    &lt;/div&gt;
-
-                                    &lt;div class="environment target"&gt;
-                                    &lt;h3&gt;📁 Target Original&lt;/h3&gt;
-                                    &lt;p&gt;Reportes estándar de Maven (siempre disponibles)&lt;/p&gt;
-                                    &lt;div class="links"&gt;
-                                    &lt;a href="target/cucumber-reports/index.html" class="link"&gt;📊 Cucumber Reports&lt;/a&gt;
-                                    &lt;a href="target/surefire-reports/" class="link"&gt;🧪 Surefire Reports&lt;/a&gt;
-                                    &lt;/div&gt;
-                                    &lt;/div&gt;
-
-                                    &lt;div class="commands"&gt;
-                                    &lt;h4&gt;💻 Comandos para ejecutar tests:&lt;/h4&gt;
-                                    &lt;p&gt;&lt;strong&gt;DEV:&lt;/strong&gt; &lt;code&gt;$env:ENTORNO="D"; mvn clean verify&lt;/code&gt;&lt;/p&gt;
-                                    &lt;p&gt;&lt;strong&gt;CERT:&lt;/strong&gt; &lt;code&gt;$env:ENTORNO="C"; mvn clean verify&lt;/code&gt;&lt;/p&gt;
-                                    &lt;p&gt;&lt;strong&gt;Con tags:&lt;/strong&gt; &lt;code&gt;$env:ENTORNO="C"; mvn clean verify "-Dcucumber.filter.tags=@Login"&lt;/code&gt;&lt;/p&gt;
-                                    &lt;/div&gt;
-                                    &lt;/div&gt;
-                                    &lt;/body&gt;
-                                    &lt;/html&gt;</echo>
+                                <!-- 🚫 ELIMINADO: Ya no genera index.html automáticamente -->
+                                <!-- Esto permite que mantengas tu dashboard hermoso -->
 
                                 <!-- Logs finales -->
                                 <echo message="✅ Reportes copiados exitosamente a reports/${detected.environment}/"/>
-                                <echo message="🌐 Dashboard generado: index.html"/>
                                 <echo message="🎯 Entorno final usado: ${detected.environment}"/>
                                 <echo message="🔒 Metadatos seguros generados (sin credenciales)"/>
+                                <echo message="💎 Dashboard personalizado mantenido intacto"/>
                             </target>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
-
         </plugins>
     </build>
 
