@@ -34,5 +34,5 @@ Para trabajar con este proyecto en tu entorno local, debes seguir estos pasos:
    Si deseas ejecutar un test específico
 
   ```bash
-  mvn clean test -groups="nombre_del_tags"
+  mvn clean test "-Dcucumber.filter.tags=@Tags"
 
