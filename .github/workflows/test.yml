@@ -1,16 +1,13 @@
 name: 🚀 SIASIS Test Automation
-
 on:
   repository_dispatch:
     types: [test-siu01-web]
-
 permissions:
   contents: write
   actions: read
   checks: write
   pull-requests: write
   statuses: write
-
 jobs:
   test-automation:
     name: 🧪 Execute SIASIS Tests
@@ -20,36 +17,29 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: ☕ Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
           java-version: "17"
           cache: maven
-
       - name: 🔧 Setup Chrome Browser
         uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: stable
-
       - name: 📋 Parse Input Parameters
         id: params
         run: |
           echo "🔍 Parsing webhook payload..."
-
           TAGS="${{ github.event.client_payload.tags }}"
           ENVIRONMENT="${{ github.event.client_payload.environment }}"
           REPORT_NAME="${{ github.event.client_payload.report_name }}"
           BROWSER="${{ github.event.client_payload.browser }}"
           PARALLEL="${{ github.event.client_payload.parallel }}"
-
-          TAGS=${TAGS:-"@Login"}
           ENVIRONMENT=${ENVIRONMENT:-"D"}
           REPORT_NAME=${REPORT_NAME:-"$(date +%Y%m%d_%H%M%S)_${ENVIRONMENT}"}
           BROWSER=${BROWSER:-"chrome"}
           PARALLEL=${PARALLEL:-"false"}
-
           if [ "$ENVIRONMENT" = "D" ]; then
             ENV_NAME="dev"
             ENV_DISPLAY="🛠️ DESARROLLO"
@@ -61,7 +51,10 @@ jobs:
             ENV_DISPLAY="🛠️ DESARROLLO (default)"
             ENVIRONMENT="D"
           fi
-
+          if [ -z "$TAGS" ]; then
+            echo "ℹ️ No tags provided, running all tests..."
+            TAGS=""
+          fi
           echo "tags=$TAGS" >> $GITHUB_OUTPUT
           echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
           echo "env_name=$ENV_NAME" >> $GITHUB_OUTPUT
@@ -69,16 +62,12 @@ jobs:
           echo "report_name=$REPORT_NAME" >> $GITHUB_OUTPUT
           echo "browser=$BROWSER" >> $GITHUB_OUTPUT
           echo "parallel=$PARALLEL" >> $GITHUB_OUTPUT
-
       - name: 🔐 Setup Environment Variables
         run: |
           echo "ENTORNO=${{ steps.params.outputs.environment }}" >> $GITHUB_ENV
           echo "BROWSER=${{ steps.params.outputs.browser }}" >> $GITHUB_ENV
-
           echo "CI_HEADLESS_MODE=true" >> $GITHUB_ENV
-
           if [ "${{ steps.params.outputs.environment }}" = "D" ]; then
-            # DEV
             echo "DIRECTIVO_USERNAME_DEV=${{ secrets.DIRECTIVO_USERNAME_DEV }}" >> $GITHUB_ENV
             echo "DIRECTIVO_PASSWORD_DEV=${{ secrets.DIRECTIVO_PASSWORD_DEV }}" >> $GITHUB_ENV
             echo "AUXILIAR_USERNAME_DEV=${{ secrets.AUXILIAR_USERNAME_DEV }}" >> $GITHUB_ENV
@@ -94,7 +83,6 @@ jobs:
             echo "RESPONSABLE_USERNAME_DEV=${{ secrets.RESPONSABLE_USERNAME_DEV }}" >> $GITHUB_ENV
             echo "RESPONSABLE_PASSWORD_DEV=${{ secrets.RESPONSABLE_PASSWORD_DEV }}" >> $GITHUB_ENV
           else
-            # CERT
             echo "DIRECTIVO_USERNAME_CERT=${{ secrets.DIRECTIVO_USERNAME_CERT }}" >> $GITHUB_ENV
             echo "DIRECTIVO_PASSWORD_CERT=${{ secrets.DIRECTIVO_PASSWORD_CERT }}" >> $GITHUB_ENV
             echo "AUXILIAR_USERNAME_CERT=${{ secrets.AUXILIAR_USERNAME_CERT }}" >> $GITHUB_ENV
@@ -110,32 +98,32 @@ jobs:
             echo "RESPONSABLE_USERNAME_CERT=${{ secrets.RESPONSABLE_USERNAME_CERT }}" >> $GITHUB_ENV
             echo "RESPONSABLE_PASSWORD_CERT=${{ secrets.RESPONSABLE_PASSWORD_CERT }}" >> $GITHUB_ENV
           fi
-
       - name: 🧪 Execute Tests
         id: tests
         run: |
           cat > .env << EOF
           ENTORNO="${{ steps.params.outputs.environment }}"
           EOF
-
           set +e
-          mvn clean verify -Dcucumber.filter.tags="${{ steps.params.outputs.tags }}" -B
+          if [ -z "${{ steps.params.outputs.tags }}" ]; then
+            echo "▶️ No tags provided, running all tests..."
+            mvn clean verify -B
+          else
+            echo "▶️ Running tests with tags: ${{ steps.params.outputs.tags }}"
+            mvn clean verify -Dcucumber.filter.tags="${{ steps.params.outputs.tags }}" -B
+          fi
           TEST_EXIT_CODE=$?
           set -e
-
           echo "test_exit_code=$TEST_EXIT_CODE" >> $GITHUB_OUTPUT
-
           if [ -d "reports/${{ steps.params.outputs.env_name }}" ]; then
             echo "reports_generated=true" >> $GITHUB_OUTPUT
           else
             echo "reports_generated=false" >> $GITHUB_OUTPUT
           fi
-
       - name: 🔒 Create Secure Metadata
         if: always()
         run: |
           mkdir -p reports/${{ steps.params.outputs.env_name }}
-
           cat > reports/${{ steps.params.outputs.env_name }}/test-metadata.txt << EOF
           # SIASIS Test Execution Metadata (GitHub Actions)
 
@@ -154,7 +142,6 @@ jobs:
             
             🔐 Created by SIASIS Test Automation
           EOF
-
       - name: 📊 Upload Test Reports (Backup)
         if: always()
         uses: actions/upload-artifact@v4
@@ -166,7 +153,6 @@ jobs:
             reports/
             index.html
           retention-days: 30
-
       - name: 📈 Publish Test Results
         if: always()
         uses: dorny/test-reporter@v1
@@ -175,29 +161,20 @@ jobs:
           path: target/surefire-reports/*.xml
           reporter: java-junit
           fail-on-error: false
-
       - name: 🚀 Commit and Push Reports to test-results Branch
         if: steps.tests.outputs.reports_generated == 'true'
         run: |
-          echo "🚀 Preparando commit de reportes a la rama test-results"
-
+          echo "🚀 Preparando commit de reportes a la rama test-results..."
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action - SIASIS Tests"
-
-          # 1️⃣ Copiamos primero los reportes actuales
-          echo "📦 Guardando reports/${{ steps.params.outputs.env_name }} e index.html en $RUNNER_TEMP..."
+          echo "📦 Guardando reports/${{ steps.params.outputs.env_name }} e index.html..."
           mkdir -p $RUNNER_TEMP/reports/${{ steps.params.outputs.env_name }}
           cp -r reports/${{ steps.params.outputs.env_name }} $RUNNER_TEMP/reports/
           cp index.html $RUNNER_TEMP/
-
-          # 2️⃣ Limpiamos los archivos actuales para evitar conflictos
           echo "🗑️ Limpiando directorio para permitir checkout..."
           rm -f index.html || true
           rm -rf reports || true
-
           git fetch origin || true
-
-          # 3️⃣ Ahora sí hacemos checkout
           if git ls-remote --exit-code --heads origin test-results > /dev/null 2>&1; then
             echo "✅ Rama test-results existe, haciendo checkout..."
             git checkout test-results
@@ -208,10 +185,7 @@ jobs:
             git rm -rf . --quiet || true
             git commit --allow-empty -m "🆕 Inicializar rama test-results"
           fi
-
-          # 4️⃣ Ahora restauramos los reportes para el entorno correspondiente
           echo "📥 Restaurando files desde $RUNNER_TEMP..."
-
           if [ "${{ steps.params.outputs.env_name }}" = "dev" ]; then
             rm -rf reports/dev
             mkdir -p reports
@@ -223,11 +197,8 @@ jobs:
             cp -r $RUNNER_TEMP/reports/cert reports/
             cp $RUNNER_TEMP/index.html ./
           fi
-
           git add reports/
           git add index.html
-
-          # 5️⃣ Si hay cambios, hacemos commit
           if git diff --staged --quiet; then
             echo "⚠️ No hay cambios para commitear."
           else
@@ -245,34 +216,27 @@ jobs:
             🕐 Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')
             
             ${{ steps.tests.outputs.test_exit_code == '0' && '✅ Tests: PASSED' || '❌ Tests: FAILED' }}"
-            
             git commit -m "$COMMIT_MSG"
-
             echo "🚀 Pushing reportes a la rama test-results..."
             git push origin test-results
             echo "✅ Reportes pusheados exitosamente a test-results."
             echo "🌐 GitHub Pages actualizado en minutos."
           fi
-
       - name: 📋 Test Summary
         if: always()
         run: |
           echo "## 🧪 Resumen de Ejecución de Tests" >> $GITHUB_STEP_SUMMARY
-
           echo "| Parámetro | Valor |" >> $GITHUB_STEP_SUMMARY
           echo "|-----------|--------|" >> $GITHUB_STEP_SUMMARY
-
           echo "| 🌍 Entorno | ${{ steps.params.outputs.env_display }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 🏷️ Tags | \`${{ steps.params.outputs.tags }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| 📝 Nombre Reporte | ${{ steps.params.outputs.report_name }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 🌐 Browser | ${{ steps.params.outputs.browser }} |" >> $GITHUB_STEP_SUMMARY
-
           if [ "${{ steps.tests.outputs.test_exit_code }}" = "0" ]; then
             echo "### ✅ Resultado: ÉXITO" >> $GITHUB_STEP_SUMMARY
           else
             echo "### ❌ Resultado: FALLÓ" >> $GITHUB_STEP_SUMMARY
           fi
-
           if [ "${{ steps.tests.outputs.reports_generated }}" = "true" ]; then
             echo "### 📊 Reportes Generados" >> $GITHUB_STEP_SUMMARY
             echo "- 🌐 [GitHub Pages Dashboard](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/)" >> $GITHUB_STEP_SUMMARY
@@ -283,7 +247,6 @@ jobs:
           else
             echo "❌ No se generaron reportes para esta ejecución" >> $GITHUB_STEP_SUMMARY
           fi
-
           echo "---" >> $GITHUB_STEP_SUMMARY
           echo "*🔒 Ejecución segura - Credenciales protegidas via GitHub Secrets*" >> $GITHUB_STEP_SUMMARY
           echo "*⚡ Ejecutado el $(date -u) via webhook \`test-siu01-web\`*" >> $GITHUB_STEP_SUMMARY
