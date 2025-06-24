@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 SIASIS - Dashboard de Reportes de Testing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 15px 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 15px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 4px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #fff, #f0f8ff, #e6f3ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 3px;
+        }
+
+        .timestamp {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .environment-detector {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .environment-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .env-badge {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+            animation: pulse 2s infinite;
+        }
+
+        .env-dev { background: linear-gradient(45deg, #4CAF50, #45a049); }
+        .env-cert { background: linear-gradient(45deg, #ff9800, #f57c00); }
+        .env-current { background: linear-gradient(45deg, #2196F3, #1976D2); }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 10px;
+        }
+
+        @media (min-width: 600px) and (max-width: 1000px) {
+            .reports-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .reports-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+        }
+
+        .report-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.8s ease-out forwards;
+            opacity: 0;
+            height: auto;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .report-card:nth-child(1) { animation-delay: 0.1s; }
+        .report-card:nth-child(2) { animation-delay: 0.2s; }
+        .report-card:nth-child(3) { animation-delay: 0.3s; }
+        .report-card:nth-child(4) { animation-delay: 0.4s; }
+        .report-card:nth-child(5) { animation-delay: 0.5s; }
+        .report-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .report-card:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .report-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .report-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .report-icon {
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .report-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 3px;
+        }
+
+        .report-description {
+            color: #7f8c8d;
+            font-size: 0.8rem;
+        }
+
+        .report-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+        }
+
+        .report-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 8px;
+            text-decoration: none;
+            color: #495057;
+            transition: all 0.3s ease;
+            border: 1px solid #dee2e6;
+            font-size: 0.85rem;
+        }
+
+        .report-link:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: translateX(2px);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .link-icon {
+            font-size: 1.1rem;
+            width: 20px;
+            flex-shrink: 0;
+        }
+
+        .environment-selector {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .env-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .env-button:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+
+        .env-button.active {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .footer {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            margin-top: 20px;
+            padding: 12px 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .footer p {
+            margin-bottom: 2px;
+        }
+
+        .refresh-btn {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.05) rotate(180deg);
+            box-shadow: 0 4px 18px rgba(0,0,0,0.4);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.6rem; }
+            .reports-grid { 
+                grid-template-columns: 1fr; 
+                gap: 10px;
+                padding: 0 5px;
+            }
+            .container { padding: 10px 15px; }
+            .report-card { 
+                padding: 12px; 
+                min-height: 180px;
+            }
+            .environment-detector { padding: 8px; }
+            .report-title { font-size: 0.9rem; }
+            .report-description { font-size: 0.7rem; }
+            .report-link { 
+                padding: 7px 8px; 
+                font-size: 0.8rem;
+            }
+            .footer { 
+                font-size: 0.7rem; 
+                padding: 8px;
+                margin-top: 15px;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .header { margin-bottom: 10px; }
+            .header h1 { font-size: 1.5rem; margin-bottom: 3px; }
+            .header p { font-size: 0.8rem; margin-bottom: 2px; }
+            .timestamp { font-size: 0.7rem; margin-bottom: 6px; }
+            .environment-detector { 
+                padding: 8px; 
+                margin-bottom: 10px;
+            }
+            .reports-grid { 
+                gap: 8px; 
+                margin-bottom: 12px;
+            }
+            .report-card { 
+                padding: 10px; 
+                min-height: 160px;
+            }
+            .footer { 
+                margin-top: 10px; 
+                padding: 6px;
+            }
+            .container { padding: 8px 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <header class="header">
+            <h1>&#127881; SIASIS Testing Dashboard</h1>
+            <p>Sistema de Control de Asistencia - I.E. 20935 Asunci&oacute;n 8</p>
+            <p>&#128202; Portal Completo de Reportes de Testing Automatizado</p>
+            <div class="timestamp">&#128197; &Uacute;ltimo reporte generado: <span id="timestamp"></span></div>
+        </header>
+
+        <div class="environment-detector">
+            <div class="environment-status">
+                <span>&#127758; Entorno Actual:</span>
+                <span id="environmentBadge" class="env-badge env-current">DESARROLLO &#128295;</span>
+            </div>
+            
+            <div class="environment-selector">
+                <button class="env-button active" onclick="switchEnvironment('dev')" id="btnDev">
+                    &#128295; Desarrollo
+                </button>
+                <button class="env-button" onclick="switchEnvironment('cert')" id="btnCert">
+                    &#127919; Certificaci&oacute;n
+                </button>
+            </div>
+        </div>
+
+        <div class="reports-grid">
+            <!-- Cucumber Reports Principales -->
+            <div class="report-card">
+                <div class="report-header">
+                    <div class="report-icon">&#129389;</div>
+                    <div>
+                        <div class="report-title">Cucumber Reports</div>
+                        <div class="report-description">Reportes principales BDD con escenarios</div>
+                    </div>
+                </div>
+                <div class="report-links">
+                    <a href="#" class="report-link" id="cucumberIndex">
+                        <span class="link-icon">&#127968;</span>
+                        <span>Dashboard Principal</span>
+                    </a>
+                    <a href="#" class="report-link" id="cucumberFeatures">
+                        <span class="link-icon">&#128203;</span>
+                        <span>Overview Features</span>
+                    </a>
+                    <a href="#" class="report-link" id="cucumberSteps">
+                        <span class="link-icon">&#128099;</span>
+                        <span>Overview Steps</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- An&aacute;lisis de Fallos -->
+            <div class="report-card">
+                <div class="report-header">
+                    <div class="report-icon">&#128269;</div>
+                    <div>
+                        <div class="report-title">An&aacute;lisis de Fallos</div>
+                        <div class="report-description">Reportes detallados de errores y tags</div>
+                    </div>
+                </div>
+                <div class="report-links">
+                    <a href="#" class="report-link" id="cucumberFailures">
+                        <span class="link-icon">&#10060;</span>
+                        <span>Overview Failures</span>
+                    </a>
+                    <a href="#" class="report-link" id="cucumberTags">
+                        <span class="link-icon">&#127991;</span>
+                        <span>Overview Tags</span>
+                    </a>
+                    <a href="#" class="report-link" id="surefireReports">
+                        <span class="link-icon">&#128202;</span>
+                        <span>Surefire Reports</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Datos JSON y Raw -->
+            <div class="report-card">
+                <div class="report-header">
+                    <div class="report-icon">&#128190;</div>
+                    <div>
+                        <div class="report-title">Datos Raw</div>
+                        <div class="report-description">JSON y datos estructurados</div>
+                    </div>
+                </div>
+                <div class="report-links">
+                    <a href="#" class="report-link" id="cucumberJson">
+                        <span class="link-icon">&#128196;</span>
+                        <span>Cucumber JSON</span>
+                    </a>
+                    <a href="#" class="report-link" id="testMetadata">
+                        <span class="link-icon">&#8505;</span>
+                        <span>Test Metadata</span>
+                    </a>
+                    <a href="#" class="report-link" id="mavenArchiver">
+                        <span class="link-icon">&#128230;</span>
+                        <span>Maven Info</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Reportes Espec&iacute;ficos -->
+            <div class="report-card">
+                <div class="report-header">
+                    <div class="report-icon">&#128200;</div>
+                    <div>
+                        <div class="report-title">Reportes Espec&iacute;ficos</div>
+                        <div class="report-description">Reportes detallados por caracter&iacute;stica</div>
+                    </div>
+                </div>
+                <div class="report-links">
+                    <a href="#" class="report-link" id="reportFeatures">
+                        <span class="link-icon">&#128214;</span>
+                        <span>Report Features</span>
+                    </a>
+                    <a href="#" class="report-link" id="reportTags">
+                        <span class="link-icon">&#128278;</span>
+                        <span>Report Tags</span>
+                    </a>
+                    <a href="#" class="report-link" id="reportSteps">
+                        <span class="link-icon">&#9889;</span>
+                        <span>Report Steps</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Configuraci&oacute;n y Clases -->
+            <div class="report-card">
+                <div class="report-header">
+                    <div class="report-icon">&#9881;</div>
+                    <div>
+                        <div class="report-title">Configuraci&oacute;n</div>
+                        <div class="report-description">Test classes y configuraci&oacute;n</div>
+                    </div>
+                </div>
+                <div class="report-links">
+                    <a href="#" class="report-link" id="testClasses">
+                        <span class="link-icon">&#128218;</span>
+                        <span>Test Classes</span>
+                    </a>
+                    <a href="#" class="report-link" onclick="showCommands()">
+                        <span class="link-icon">&#128187;</span>
+                        <span>Comandos Maven</span>
+                    </a>
+                    <a href="#" class="report-link" onclick="showHelp()">
+                        <span class="link-icon">&#10067;</span>
+                        <span>Ayuda</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Utilidades Avanzadas -->
+            <div class="report-card">
+                <div class="report-header">
+                    <div class="report-icon">&#128295;</div>
+                    <div>
+                        <div class="report-title">Utilidades</div>
+                        <div class="report-description">Herramientas y an&aacute;lisis avanzados</div>
+                    </div>
+                </div>
+                <div class="report-links">
+                    <a href="#" class="report-link" onclick="analyzeReports()">
+                        <span class="link-icon">&#128300;</span>
+                        <span>Analizar Reportes</span>
+                    </a>
+                    <a href="#" class="report-link" onclick="compareEnvironments()">
+                        <span class="link-icon">&#9878;</span>
+                        <span>Comparar Entornos</span>
+                    </a>
+                    <a href="#" class="report-link" onclick="exportSummary()">
+                        <span class="link-icon">&#128228;</span>
+                        <span>Exportar Resumen</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>&#127979; I.E. 20935 Asunci&oacute;n 8 - Imperial, Ca&ntilde;ete</p>
+            <p>&#128295; Sistema de Testing Automatizado con Selenium + Cucumber</p>
+            <p style="font-size: 0.6rem;">&#128640; DEV: <code style="font-size: 0.6rem;">$env:ENTORNO="D"; mvn clean verify</code> | CERT: <code style="font-size: 0.6rem;">$env:ENTORNO="C"; mvn clean verify</code></p>
+        </footer>
+    </div>
+
+    <button class="refresh-btn" onclick="updateTimestamp()" title="Actualizar timestamp">
+        &#128260;
+    </button>
+
+    <script>
+        let currentEnvironment = 'dev';
+
+        // Crear estrellas animadas
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starCount = window.innerWidth < 768 ? 30 : window.innerHeight < 600 ? 20 : 100;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Cambiar entorno
+        function switchEnvironment(env) {
+            currentEnvironment = env;
+            
+            document.querySelectorAll('.env-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('btn' + env.charAt(0).toUpperCase() + env.slice(1)).classList.add('active');
+            
+            const badge = document.getElementById('environmentBadge');
+            badge.textContent = env === 'dev' ? 'DESARROLLO \u{1F6E0}' : 'CERTIFICACIÓN \u{1F3AF}';
+            badge.className = 'env-badge env-' + env;
+            
+            updateLinks();
+        }
+
+        // Actualizar enlaces según el entorno
+        function updateLinks() {
+            const basePath = `reports/${currentEnvironment}/`;
+            
+            // Cucumber Reports
+            document.getElementById('cucumberIndex').href = basePath + 'cucumber-reports/index.html';
+            document.getElementById('cucumberFeatures').href = basePath + 'cucumber-html-reports/overview-features.html';
+            document.getElementById('cucumberSteps').href = basePath + 'cucumber-html-reports/overview-steps.html';
+            document.getElementById('cucumberFailures').href = basePath + 'cucumber-html-reports/overview-failures.html';
+            document.getElementById('cucumberTags').href = basePath + 'cucumber-html-reports/overview-tags.html';
+            
+            // Report específicos
+            document.getElementById('reportFeatures').href = basePath + 'cucumber-html-reports/report-feature_';
+            document.getElementById('reportTags').href = basePath + 'cucumber-html-reports/report-tag_';
+            document.getElementById('reportSteps').href = basePath + 'cucumber-html-reports/report-step_';
+            
+            // Otros reportes
+            document.getElementById('surefireReports').href = basePath + 'surefire-reports/';
+            document.getElementById('cucumberJson').href = basePath + 'cucumber/';
+            document.getElementById('testMetadata').href = basePath + 'test-metadata.txt';
+            document.getElementById('mavenArchiver').href = basePath + 'maven-archiver/';
+            document.getElementById('testClasses').href = basePath + 'test-classes/';
+        }
+
+        // Actualizar timestamp
+        function updateTimestamp() {
+            const timestamp = document.getElementById('timestamp');
+            const now = new Date();
+            timestamp.textContent = now.toLocaleString('es-ES', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            const btn = document.querySelector('.refresh-btn');
+            btn.style.transform = 'scale(1.1) rotate(360deg)';
+            setTimeout(() => {
+                btn.style.transform = 'scale(1) rotate(0deg)';
+            }, 1000);
+        }
+
+        // Mostrar comandos
+        function showCommands() {
+            alert(`COMANDOS MAVEN PARA SIASIS
+
+EJECUTAR TESTS:
+• Desarrollo:     $env:ENTORNO="D"; mvn clean verify
+• Certificación:  $env:ENTORNO="C"; mvn clean verify
+• Solo tests:     mvn test
+• Limpiar:        mvn clean
+
+REPORTES GENERADOS:
+• Cucumber HTML: cucumber-reports/
+• Surefire: surefire-reports/
+• JSON: cucumber/
+• Maven: maven-archiver/
+• Classes: test-classes/
+
+TIPS:
+• Usa diferentes entornos para comparar resultados
+• Los reportes se mantienen separados por entorno
+• Revisa test-metadata.txt para detalles de ejecución`);
+        }
+
+        // Mostrar ayuda
+        function showHelp() {
+            alert(`SIASIS TESTING DASHBOARD - AYUDA COMPLETA
+
+NAVEGACIÓN:
+• Usa los botones Desarrollo/Certificación para cambiar entorno
+• Cada entorno mantiene sus propios reportes
+• Los enlaces se actualizan automáticamente
+
+TIPOS DE REPORTES:
+• Cucumber Reports: Dashboard principal BDD
+• Overview Features/Steps/Tags: Análisis detallado
+• Surefire: Reportes JUnit
+• JSON: Datos raw estructurados
+• Maven: Info de compilación
+
+ESTRUCTURA POR ENTORNO:
+reports/
+├── dev/ (ENTORNO="D")
+│   ├── cucumber-reports/ (HTML principal)
+│   ├── surefire-reports/ (JUnit)
+│   ├── cucumber/ (JSON)
+│   ├── maven-archiver/ (Info Maven)
+│   └── test-classes/ (Clases compiladas)
+└── cert/ (ENTORNO="C", misma estructura)
+
+CARACTERÍSTICAS:
+• Dashboard responsivo
+• Múltiples formatos de reporte
+• Análisis comparativo entre entornos
+• Actualización automática de timestamps`);
+        }
+
+        // Analizar reportes
+        function analyzeReports() {
+            alert(`ANÁLISIS DE REPORTES
+
+FUNCIONES DE ANÁLISIS:
+• Overview Features: Resumen por característica
+• Overview Steps: Análisis de pasos
+• Overview Failures: Detalle de fallos
+• Overview Tags: Análisis por tags
+
+MÉTRICAS CLAVE:
+• Total de escenarios ejecutados
+• Porcentaje de éxito
+• Tiempo de ejecución
+• Pasos más utilizados
+• Tags más frecuentes
+
+RECOMENDACIONES:
+• Revisa primero Overview Features
+• Luego analiza Failures si hay errores
+• Usa Tags para organizar tests
+• Compara métricas entre entornos`);
+        }
+
+        // Comparar entornos
+        function compareEnvironments() {
+            alert(`COMPARACIÓN ENTRE ENTORNOS
+
+DESARROLLO vs CERTIFICACIÓN
+
+MÉTRICAS A COMPARAR:
+• Número de tests ejecutados
+• Porcentaje de éxito
+• Tiempo total de ejecución
+• Fallos por categoría
+
+CÓMO COMPARAR:
+1. Ejecuta tests en ambos entornos
+2. Navega entre DEV y CERT usando los botones
+3. Compara Overview Features de ambos
+4. Revisa diferencias en Failures
+
+ANÁLISIS RECOMENDADO:
+• DEV: Detección temprana de problemas
+• CERT: Validación final antes de producción
+• Diferencias indican problemas de configuración`);
+        }
+
+        // Exportar resumen
+        function exportSummary() {
+            const summary = `
+# SIASIS - Resumen de Testing
+## Entorno: ${currentEnvironment.toUpperCase()}
+## Fecha: ${new Date().toLocaleString('es-ES')}
+
+### Reportes Disponibles:
+- Cucumber Reports: ✅
+- Surefire Reports: ✅
+- JSON Data: ✅
+- Maven Info: ✅
+- Test Classes: ✅
+
+### Enlaces Importantes:
+- Dashboard: reports/${currentEnvironment}/cucumber-reports/index.html
+- Features: reports/${currentEnvironment}/cucumber-reports/overview-features.html
+- Failures: reports/${currentEnvironment}/cucumber-reports/overview-failures.html
+
+### Comandos Útiles:
+- Desarrollo: $env:ENTORNO="D"; mvn clean verify
+- Certificación: $env:ENTORNO="C"; mvn clean verify
+
+### Proyecto: SIASIS - I.E. 20935 Asunción 8
+### Sistema de Control de Asistencia
+            `;
+            
+            const blob = new Blob([summary], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `siasis-testing-summary-${currentEnvironment}-${new Date().toISOString().slice(0,10)}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            updateTimestamp();
+            switchEnvironment('dev');
+        });
+
+        // Auto-actualizar timestamp cada minuto
+        setInterval(updateTimestamp, 60000);
+    </script>
+</body>
+</html>
