@@ -1,0 +1,29 @@
+# SIASIS Test Execution Metadata (Local)
+                                    # Generated: 2025-06-23 21:30:14
+
+                                    ## Execution Parameters
+                                    Entorno: cert
+                                    Tags ejecutados: @EdicionDatosPersonales
+                                    Comando ejecutado: mvn clean verify
+                                    Directorio origen: C:\Users\juanc\OneDrive\Escritorio\PROYECTO SIASIS\TESTING\continuous-testing-selenium-SIASIS-SIU01-WEB\target
+
+                                    ## Project Info
+                                    Proyecto: SIASIS_SELENIUM
+                                    Versión: 1.0-SNAPSHOT
+                                    Usuario: juanc
+                                    Sistema operativo: Windows 11
+                                    Java version: 17.0.7
+
+                                    ## Detection Method
+                                    Variable ENTORNO sistema: C
+                                    Variable ENTORNO archivo: C
+                                    Método detección: ${env.ENTORNO != null ? 'Variable sistema' : 'Archivo .env'}
+
+                                    ## Timestamps
+                                    Fecha de ejecución: 2025-06-23 21:30:14
+                                    Fecha ISO: 2025-06-23T21:30:14
+
+                                    ## Security Note
+                                    ? Las credenciales NO se almacenan en este archivo por seguridad
+                                    ? Credenciales se manejan via variables de entorno y archivo .env
+                                    ? Este archivo solo contiene metadatos de la ejecución
