@@ -1,22 +1,22 @@
 # SIASIS Test Execution Metadata (GitHub Actions)
-# Generated: 2025-06-24 03:24:22 UTC
+# Generated: 2025-06-24 03:40:14 UTC
 
 ## Execution Parameters
 Entorno: cert
 Tags ejecutados: @EdicionDatosPersonales
 Browser usado: chrome
 Ejecución paralela: false
-Nombre del reporte: cert_edicion_1750735412
+Nombre del reporte: cert_edicion_1750736351
 
 ## GitHub Action Info
 Repository: GeoCoderDev/continuous-testing-selenium-SIASIS-SIU01-WEB
 Workflow: 🚀 SIASIS Test Automation
-Run ID: 15840416545
-Run Number: 13
+Run ID: 15840624113
+Run Number: 14
 Actor: GeoCoderDev
 Event: repository_dispatch
 Ref: refs/heads/master
-SHA: 808ff8c88e5af05ce68bbd1ce485916fd6b57d11
+SHA: 2ec700058271f74aadbc6d4df9b288fded4055e4
 
 ## System Info
 Runner OS: Linux
@@ -29,11 +29,11 @@ Exit Code: 0
 Reports Generated: true
 
 ## Timestamps
-Started: 2025-06-24 03:19:22 UTC
-Completed: 2025-06-24 03:24:22 UTC
+Started: 2025-06-24 03:35:14 UTC
+Completed: 2025-06-24 03:40:14 UTC
 
 ## Links
-GitHub Run: https://github.com/GeoCoderDev/continuous-testing-selenium-SIASIS-SIU01-WEB/actions/runs/15840416545
+GitHub Run: https://github.com/GeoCoderDev/continuous-testing-selenium-SIASIS-SIU01-WEB/actions/runs/15840624113
 Repository: https://github.com/GeoCoderDev/continuous-testing-selenium-SIASIS-SIU01-WEB
 GitHub Pages: https://GeoCoderDev.github.io/continuous-testing-selenium-SIASIS-SIU01-WEB/
 
