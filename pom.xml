@@ -171,6 +171,11 @@
                                     <fileset dir="${project.build.directory}/maven-archiver" erroronmissingdir="false"/>
                                 </copy>
                                 
+                                <!-- Cucumber HTML Reports (nueva carpeta) -->
+                                <copy todir="${project.basedir}/reports/${target.env}/cucumber-html-reports" preservelastmodified="true" overwrite="true" failonerror="false" quiet="true">
+                                    <fileset dir="${project.build.directory}/cucumber-html-reports" erroronmissingdir="false"/>
+                                </copy>
+
                                 <!-- Test Classes (para referencia) -->
                                 <copy todir="${project.basedir}/reports/${target.env}/test-classes" preservelastmodified="true" overwrite="true" failonerror="false" quiet="true">
                                     <fileset dir="${project.build.directory}/test-classes" erroronmissingdir="false">
@@ -830,15 +835,15 @@
             
             // Cucumber Reports
             document.getElementById('cucumberIndex').href = basePath + 'cucumber-reports/index.html';
-            document.getElementById('cucumberFeatures').href = basePath + 'cucumber-reports/overview-features.html';
-            document.getElementById('cucumberSteps').href = basePath + 'cucumber-reports/overview-steps.html';
-            document.getElementById('cucumberFailures').href = basePath + 'cucumber-reports/overview-failures.html';
-            document.getElementById('cucumberTags').href = basePath + 'cucumber-reports/overview-tags.html';
+            document.getElementById('cucumberFeatures').href = basePath + 'cucumber-html-reports/overview-features.html';
+            document.getElementById('cucumberSteps').href = basePath + 'cucumber-html-reports/overview-steps.html';
+            document.getElementById('cucumberFailures').href = basePath + 'cucumber-html-reports/overview-failures.html';
+            document.getElementById('cucumberTags').href = basePath + 'cucumber-html-reports/overview-tags.html';
             
             // Report específicos
-            document.getElementById('reportFeatures').href = basePath + 'cucumber-reports/report-feature_';
-            document.getElementById('reportTags').href = basePath + 'cucumber-reports/report-tag_';
-            document.getElementById('reportSteps').href = basePath + 'cucumber-reports/report-step_';
+            document.getElementById('reportFeatures').href = basePath + 'cucumber-html-reports/report-feature_';
+            document.getElementById('reportTags').href = basePath + 'cucumber-html-reports/report-tag_';
+            document.getElementById('reportSteps').href = basePath + 'cucumber-html-reports/report-step_';
             
             // Otros reportes
             document.getElementById('surefireReports').href = basePath + 'surefire-reports/';
