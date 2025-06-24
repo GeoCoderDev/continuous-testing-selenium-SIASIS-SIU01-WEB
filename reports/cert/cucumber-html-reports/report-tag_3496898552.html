@@ -76,7 +76,7 @@ $(document).ready(function() {
     <tr class="info">
       <td>SIASIS_SELENIUM</td>
         <td>1</td>
-      <td>23 jun. 2025, 21:30</td>
+      <td>24 Jun 2025, 03:24</td>
     </tr>
   </tbody>
 </table>
@@ -129,19 +129,19 @@ $(document).ready(function() {
         <tbody>
         <tr>
           <td class="tagname">@Directivo</td>
-          <td      class="passed"    >8</td>
           <td >0</td>
           <td >0</td>
+          <td     class="skipped"   >8</td>
           <td >0</td>
           <td >0</td>
           <td class="total">8</td>
 
-          <td  class="passed"    >1</td>
           <td >0</td>
+          <td  class="failed"    >1</td>
           <td class="total">1</td>
 
-          <td class="duration" data-value="24325655700">24.325</td>
-          <td class="passed">Passed</td>
+          <td class="duration" data-value="652177">0.000</td>
+          <td class="failed">Failed</td>
         </tr>
         </tbody>
 
@@ -184,12 +184,12 @@ $(document).ready(function() {
 </div>
 
 
-  <span class="lead-duration duration">24.325</span>
+  <span class="lead-duration duration">0.000</span>
 
 
-  <span data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#element-1">
+  <span data-toggle="collapse" class=" collapsable-control" data-target="#element-1">
 
-<div class="brief passed">
+<div class="brief failed">
   <span class="keyword indention">Scenario</span>
   <span class="name">Editar perfil con el rol Directivo</span>
 
@@ -200,13 +200,13 @@ $(document).ready(function() {
   </span>
   <div class="description indention"></div>
 
-  <div id="element-1" class="collapse collapsable-details ">
+  <div id="element-1" class="collapse collapsable-details  in ">
 
 
   <div class="inner-level hooks-element-before">
-    <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#before-2">
+    <div data-toggle="collapse" class=" collapsable-control" data-target="#before-2">
 
-<div class="brief passed">
+<div class="brief failed">
   <span class="keyword indention">Hooks</span>
   <span class="name"></span>
 
@@ -216,17 +216,48 @@ $(document).ready(function() {
 
     </div>
 
-    <div id="before-2" class="inner-level collapse collapsable-details ">
+    <div id="before-2" class="inner-level collapse collapsable-details  in ">
         <div class="hook">
-          <div class="brief passed">
+          <div class="brief failed">
             <span class="keyword indention">Before</span>
               <span class="location name">com.siasis.hooks.Hooks.setUp(io.cucumber.java.Scenario)</span>
 
-  <span class="lead-duration duration">1.919</span>
+  <span class="lead-duration duration">5.950</span>
 
           </div>
 
 
+
+  <div class="inner-level">
+    <div class="message indention">
+      <div data-toggle="collapse" class=" collapsable-control" data-target="#msg-3">
+          <a>Error message</a>
+      </div>
+      <div id="msg-3" class="collapse collapsable-details  in ">
+        <pre>org.openqa.selenium.SessionNotCreatedException: Could not start a new session. Response code 500. Message: session not created: probably user data directory is already in use, please specify a unique value for --user-data-dir argument, or don't use --user-data-dir 
+Host info: host: 'pkrvmxyh4eaekms', ip: '10.1.0.186'
+Build info: version: '4.33.0', revision: '2c6aaad03a'
+System info: os.name: 'Linux', os.arch: 'amd64', os.version: '6.11.0-1015-azure', java.version: '17.0.15'
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Command: [null, newSession {capabilities=[Capabilities {browserName: chrome, goog:chromeOptions: {args: [--disable-gpu, --no-sandbox, --disable-dev-shm-usage, --remote-allow-origins=*], extensions: []}}]}]
+	at org.openqa.selenium.remote.ProtocolHandshake.createSession(ProtocolHandshake.java:114)
+	at org.openqa.selenium.remote.ProtocolHandshake.createSession(ProtocolHandshake.java:75)
+	at org.openqa.selenium.remote.ProtocolHandshake.createSession(ProtocolHandshake.java:61)
+	at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:187)
+	at org.openqa.selenium.remote.service.DriverCommandExecutor.invokeExecute(DriverCommandExecutor.java:216)
+	at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:174)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:544)
+	at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:244)
+	at org.openqa.selenium.remote.RemoteWebDriver.&lt;init&gt;(RemoteWebDriver.java:173)
+	at org.openqa.selenium.chromium.ChromiumDriver.&lt;init&gt;(ChromiumDriver.java:110)
+	at org.openqa.selenium.chrome.ChromeDriver.&lt;init&gt;(ChromeDriver.java:88)
+	at org.openqa.selenium.chrome.ChromeDriver.&lt;init&gt;(ChromeDriver.java:83)
+	at org.openqa.selenium.chrome.ChromeDriver.&lt;init&gt;(ChromeDriver.java:72)
+	at com.siasis.hooks.Hooks.setUp(Hooks.java:27)
+</pre>
+      </div>
+    </div>
+  </div>
 
 
 
@@ -239,9 +270,9 @@ $(document).ready(function() {
 
 
 <div class="steps inner-level">
-  <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#steps-3">
+  <div data-toggle="collapse" class=" collapsable-control" data-target="#steps-4">
 
-<div class="brief passed">
+<div class="brief failed">
   <span class="keyword indention">Steps</span>
   <span class="name"></span>
 
@@ -251,15 +282,15 @@ $(document).ready(function() {
 
   </div>
 
-  <div id="steps-3" class="inner-level collapse collapsable-details ">
+  <div id="steps-4" class="inner-level collapse collapsable-details  in ">
       <div class="step">
 
 
-<div class="brief step-name-Given passed">
+<div class="brief step-name-Given skipped">
   <span class="keyword indention">Given</span>
   <span class="name">Selecciono el rol <span class="argument">DIRECTIVO</span></span>
 
-  <span class="lead-duration duration">2.945</span>
+  <span class="lead-duration duration">0.000</span>
 
 </div>
 
@@ -274,21 +305,6 @@ $(document).ready(function() {
 
 
 
-  <div class="embeddings inner-level">
-  <div class="embedding indention">
-    <div data-toggle="collapse" data-target="#embedding-4" class="collapsable-control">
-      <a>Screenshot</a>
-      <a href="embeddings/embedding_-652999608.png" download target="_blank">
-        <span class="download-button glyphicon glyphicon-download-alt"></span>
-      </a>
-    </div>
-    <div id="embedding-4" class="collapse collapsable-details ">
-      <div class="embedding-content">
-        <img src="embeddings/embedding_-652999608.png">
-      </div>
-    </div>
-  </div>
-  </div>
 
 
 
@@ -297,11 +313,11 @@ $(document).ready(function() {
       <div class="step">
 
 
-<div class="brief step-name-And passed">
+<div class="brief step-name-And skipped">
   <span class="keyword indention">And</span>
   <span class="name">Ingreso mi nombre de usuario y contrase&ntilde;a</span>
 
-  <span class="lead-duration duration">0.396</span>
+  <span class="lead-duration duration">0.000</span>
 
 </div>
 
@@ -316,21 +332,6 @@ $(document).ready(function() {
 
 
 
-  <div class="embeddings inner-level">
-  <div class="embedding indention">
-    <div data-toggle="collapse" data-target="#embedding-5" class="collapsable-control">
-      <a>Screenshot</a>
-      <a href="embeddings/embedding_1643070875.png" download target="_blank">
-        <span class="download-button glyphicon glyphicon-download-alt"></span>
-      </a>
-    </div>
-    <div id="embedding-5" class="collapse collapsable-details ">
-      <div class="embedding-content">
-        <img src="embeddings/embedding_1643070875.png">
-      </div>
-    </div>
-  </div>
-  </div>
 
 
 
@@ -339,11 +340,11 @@ $(document).ready(function() {
       <div class="step">
 
 
-<div class="brief step-name-Then passed">
+<div class="brief step-name-Then skipped">
   <span class="keyword indention">Then</span>
   <span class="name">Accedo al sistema como <span class="argument">DIRECTIVO</span></span>
 
-  <span class="lead-duration duration">10.659</span>
+  <span class="lead-duration duration">0.000</span>
 
 </div>
 
@@ -358,21 +359,6 @@ $(document).ready(function() {
 
 
 
-  <div class="embeddings inner-level">
-  <div class="embedding indention">
-    <div data-toggle="collapse" data-target="#embedding-6" class="collapsable-control">
-      <a>Screenshot</a>
-      <a href="embeddings/embedding_-502935196.png" download target="_blank">
-        <span class="download-button glyphicon glyphicon-download-alt"></span>
-      </a>
-    </div>
-    <div id="embedding-6" class="collapse collapsable-details ">
-      <div class="embedding-content">
-        <img src="embeddings/embedding_-502935196.png">
-      </div>
-    </div>
-  </div>
-  </div>
 
 
 
@@ -381,11 +367,11 @@ $(document).ready(function() {
       <div class="step">
 
 
-<div class="brief step-name-When passed">
+<div class="brief step-name-When skipped">
   <span class="keyword indention">When</span>
   <span class="name">Estoy en la p&aacute;gina de edici&oacute;n de perfil</span>
 
-  <span class="lead-duration duration">3.742</span>
+  <span class="lead-duration duration">0.000</span>
 
 </div>
 
@@ -400,21 +386,6 @@ $(document).ready(function() {
 
 
 
-  <div class="embeddings inner-level">
-  <div class="embedding indention">
-    <div data-toggle="collapse" data-target="#embedding-7" class="collapsable-control">
-      <a>Screenshot</a>
-      <a href="embeddings/embedding_-980970406.png" download target="_blank">
-        <span class="download-button glyphicon glyphicon-download-alt"></span>
-      </a>
-    </div>
-    <div id="embedding-7" class="collapse collapsable-details ">
-      <div class="embedding-content">
-        <img src="embeddings/embedding_-980970406.png">
-      </div>
-    </div>
-  </div>
-  </div>
 
 
 
@@ -423,11 +394,11 @@ $(document).ready(function() {
       <div class="step">
 
 
-<div class="brief step-name-And passed">
+<div class="brief step-name-And skipped">
   <span class="keyword indention">And</span>
   <span class="name">Edito mis datos personales con los valores aleatorios</span>
 
-  <span class="lead-duration duration">0.886</span>
+  <span class="lead-duration duration">0.000</span>
 
 </div>
 
@@ -442,21 +413,6 @@ $(document).ready(function() {
 
 
 
-  <div class="embeddings inner-level">
-  <div class="embedding indention">
-    <div data-toggle="collapse" data-target="#embedding-8" class="collapsable-control">
-      <a>Screenshot</a>
-      <a href="embeddings/embedding_1195468164.png" download target="_blank">
-        <span class="download-button glyphicon glyphicon-download-alt"></span>
-      </a>
-    </div>
-    <div id="embedding-8" class="collapse collapsable-details ">
-      <div class="embedding-content">
-        <img src="embeddings/embedding_1195468164.png">
-      </div>
-    </div>
-  </div>
-  </div>
 
 
 
@@ -465,11 +421,11 @@ $(document).ready(function() {
       <div class="step">
 
 
-<div class="brief step-name-Then passed">
+<div class="brief step-name-Then skipped">
   <span class="keyword indention">Then</span>
   <span class="name">Verifico que se han guardado los cambios</span>
 
-  <span class="lead-duration duration">1.721</span>
+  <span class="lead-duration duration">0.000</span>
 
 </div>
 
@@ -484,21 +440,6 @@ $(document).ready(function() {
 
 
 
-  <div class="embeddings inner-level">
-  <div class="embedding indention">
-    <div data-toggle="collapse" data-target="#embedding-9" class="collapsable-control">
-      <a>Screenshot</a>
-      <a href="embeddings/embedding_-1317523269.png" download target="_blank">
-        <span class="download-button glyphicon glyphicon-download-alt"></span>
-      </a>
-    </div>
-    <div id="embedding-9" class="collapse collapsable-details ">
-      <div class="embedding-content">
-        <img src="embeddings/embedding_-1317523269.png">
-      </div>
-    </div>
-  </div>
-  </div>
 
 
 
@@ -507,11 +448,11 @@ $(document).ready(function() {
       <div class="step">
 
 
-<div class="brief step-name-And passed">
+<div class="brief step-name-And skipped">
   <span class="keyword indention">And</span>
   <span class="name">Restauro los datos originales</span>
 
-  <span class="lead-duration duration">0.662</span>
+  <span class="lead-duration duration">0.000</span>
 
 </div>
 
@@ -526,21 +467,6 @@ $(document).ready(function() {
 
 
 
-  <div class="embeddings inner-level">
-  <div class="embedding indention">
-    <div data-toggle="collapse" data-target="#embedding-10" class="collapsable-control">
-      <a>Screenshot</a>
-      <a href="embeddings/embedding_1575362595.png" download target="_blank">
-        <span class="download-button glyphicon glyphicon-download-alt"></span>
-      </a>
-    </div>
-    <div id="embedding-10" class="collapse collapsable-details ">
-      <div class="embedding-content">
-        <img src="embeddings/embedding_1575362595.png">
-      </div>
-    </div>
-  </div>
-  </div>
 
 
 
@@ -549,11 +475,11 @@ $(document).ready(function() {
       <div class="step">
 
 
-<div class="brief step-name-Then passed">
+<div class="brief step-name-Then skipped">
   <span class="keyword indention">Then</span>
   <span class="name">verifico que los datos originales son correctos</span>
 
-  <span class="lead-duration duration">3.310</span>
+  <span class="lead-duration duration">0.000</span>
 
 </div>
 
@@ -568,21 +494,6 @@ $(document).ready(function() {
 
 
 
-  <div class="embeddings inner-level">
-  <div class="embedding indention">
-    <div data-toggle="collapse" data-target="#embedding-11" class="collapsable-control">
-      <a>Screenshot</a>
-      <a href="embeddings/embedding_-206525108.png" download target="_blank">
-        <span class="download-button glyphicon glyphicon-download-alt"></span>
-      </a>
-    </div>
-    <div id="embedding-11" class="collapse collapsable-details ">
-      <div class="embedding-content">
-        <img src="embeddings/embedding_-206525108.png">
-      </div>
-    </div>
-  </div>
-  </div>
 
 
 
@@ -595,7 +506,7 @@ $(document).ready(function() {
 
 
   <div class="inner-level hooks-element-after">
-    <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#after-12">
+    <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#after-5">
 
 <div class="brief passed">
   <span class="keyword indention">Hooks</span>
@@ -607,13 +518,13 @@ $(document).ready(function() {
 
     </div>
 
-    <div id="after-12" class="inner-level collapse collapsable-details ">
+    <div id="after-5" class="inner-level collapse collapsable-details ">
         <div class="hook">
           <div class="brief passed">
             <span class="keyword indention">After</span>
               <span class="location name">com.siasis.hooks.Hooks.tearDown(io.cucumber.java.Scenario)</span>
 
-  <span class="lead-duration duration">0.315</span>
+  <span class="lead-duration duration">0.000</span>
 
           </div>
 

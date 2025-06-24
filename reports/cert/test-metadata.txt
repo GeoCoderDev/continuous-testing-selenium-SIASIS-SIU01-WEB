@@ -1,29 +1,43 @@
-# SIASIS Test Execution Metadata (Local)
-                                    # Generated: 2025-06-23 21:30:14
+# SIASIS Test Execution Metadata (GitHub Actions)
+# Generated: 2025-06-24 03:24:22 UTC
 
-                                    ## Execution Parameters
-                                    Entorno: cert
-                                    Tags ejecutados: @EdicionDatosPersonales
-                                    Comando ejecutado: mvn clean verify
-                                    Directorio origen: C:\Users\juanc\OneDrive\Escritorio\PROYECTO SIASIS\TESTING\continuous-testing-selenium-SIASIS-SIU01-WEB\target
+## Execution Parameters
+Entorno: cert
+Tags ejecutados: @EdicionDatosPersonales
+Browser usado: chrome
+EjecuciÃ³n paralela: false
+Nombre del reporte: cert_edicion_1750735412
 
-                                    ## Project Info
-                                    Proyecto: SIASIS_SELENIUM
-                                    Versión: 1.0-SNAPSHOT
-                                    Usuario: juanc
-                                    Sistema operativo: Windows 11
-                                    Java version: 17.0.7
+## GitHub Action Info
+Repository: GeoCoderDev/continuous-testing-selenium-SIASIS-SIU01-WEB
+Workflow: ðŸš€ SIASIS Test Automation
+Run ID: 15840416545
+Run Number: 13
+Actor: GeoCoderDev
+Event: repository_dispatch
+Ref: refs/heads/master
+SHA: 808ff8c88e5af05ce68bbd1ce485916fd6b57d11
 
-                                    ## Detection Method
-                                    Variable ENTORNO sistema: C
-                                    Variable ENTORNO archivo: C
-                                    Método detección: ${env.ENTORNO != null ? 'Variable sistema' : 'Archivo .env'}
+## System Info
+Runner OS: Linux
+Runner Architecture: X64
+Java Version: 17 (Temurin)
+Maven Command: mvn clean verify -Dcucumber.filter.tags="@EdicionDatosPersonales"
 
-                                    ## Timestamps
-                                    Fecha de ejecución: 2025-06-23 21:30:14
-                                    Fecha ISO: 2025-06-23T21:30:14
+## Test Results
+Exit Code: 0
+Reports Generated: true
 
-                                    ## Security Note
-                                    ? Las credenciales NO se almacenan en este archivo por seguridad
-                                    ? Credenciales se manejan via variables de entorno y archivo .env
-                                    ? Este archivo solo contiene metadatos de la ejecución
+## Timestamps
+Started: 2025-06-24 03:19:22 UTC
+Completed: 2025-06-24 03:24:22 UTC
+
+## Links
+GitHub Run: https://github.com/GeoCoderDev/continuous-testing-selenium-SIASIS-SIU01-WEB/actions/runs/15840416545
+Repository: https://github.com/GeoCoderDev/continuous-testing-selenium-SIASIS-SIU01-WEB
+GitHub Pages: https://GeoCoderDev.github.io/continuous-testing-selenium-SIASIS-SIU01-WEB/
+
+## Security Note
+ðŸ”’ Las credenciales se manejan de forma segura via GitHub Secrets
+ðŸ”’ No se almacenan credenciales en este archivo de metadatos
+ðŸ”’ Reportes publicados automÃ¡ticamente via GitHub Pages
