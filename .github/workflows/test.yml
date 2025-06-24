@@ -10,16 +10,18 @@ jobs:
   test-automation:
     name: 🧪 Execute SIASIS Tests
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: 📁 Checkout Repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: ☕ Setup Java 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: "temurin"
+          java-version: "17"
           cache: maven
 
       - name: 🔧 Setup Chrome Browser
@@ -31,21 +33,21 @@ jobs:
         id: params
         run: |
           echo "🔍 Parsing webhook payload..."
-          
+
           # Extraer parámetros del payload
           TAGS="${{ github.event.client_payload.tags }}"
           ENVIRONMENT="${{ github.event.client_payload.environment }}"
           REPORT_NAME="${{ github.event.client_payload.report_name }}"
           BROWSER="${{ github.event.client_payload.browser }}"
           PARALLEL="${{ github.event.client_payload.parallel }}"
-          
+
           # Valores por defecto
           TAGS=${TAGS:-"@Login"}
           ENVIRONMENT=${ENVIRONMENT:-"D"}
           REPORT_NAME=${REPORT_NAME:-"$(date +%Y%m%d_%H%M%S)_${ENVIRONMENT}"}
           BROWSER=${BROWSER:-"chrome"}
           PARALLEL=${PARALLEL:-"false"}
-          
+
           # Mapear entorno
           if [ "$ENVIRONMENT" = "D" ]; then
             ENV_NAME="dev"
@@ -58,14 +60,14 @@ jobs:
             ENV_DISPLAY="🛠️ DESARROLLO (default)"
             ENVIRONMENT="D"
           fi
-          
+
           echo "📊 PARÁMETROS DE EJECUCIÓN:"
           echo "   🏷️ Tags: $TAGS"
           echo "   🌍 Entorno: $ENVIRONMENT ($ENV_DISPLAY)"
           echo "   📝 Nombre reporte: $REPORT_NAME"
           echo "   🌐 Browser: $BROWSER"
           echo "   ⚡ Paralelo: $PARALLEL"
-          
+
           # Exportar variables
           echo "tags=$TAGS" >> $GITHUB_OUTPUT
           echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
@@ -78,11 +80,11 @@ jobs:
       - name: 🔐 Setup Environment Variables
         run: |
           echo "🔐 Configurando variables de entorno para ${{ steps.params.outputs.env_display }}"
-          
+
           # Variables de entorno base
           echo "ENTORNO=${{ steps.params.outputs.environment }}" >> $GITHUB_ENV
           echo "BROWSER=${{ steps.params.outputs.browser }}" >> $GITHUB_ENV
-          
+
           # Credenciales por entorno
           if [ "${{ steps.params.outputs.environment }}" = "D" ]; then
             # Entorno DEV
@@ -117,7 +119,7 @@ jobs:
             echo "RESPONSABLE_USERNAME_CERT=${{ secrets.RESPONSABLE_USERNAME_CERT }}" >> $GITHUB_ENV
             echo "RESPONSABLE_PASSWORD_CERT=${{ secrets.RESPONSABLE_PASSWORD_CERT }}" >> $GITHUB_ENV
           fi
-          
+
           echo "✅ Variables de entorno configuradas"
 
       - name: 🧪 Execute Tests
@@ -125,23 +127,23 @@ jobs:
         run: |
           echo "🚀 Ejecutando tests en ${{ steps.params.outputs.env_display }}"
           echo "🏷️ Tags: ${{ steps.params.outputs.tags }}"
-          
+
           # Crear archivo .env SEGURO (solo ENTORNO, sin credenciales)
           cat > .env << EOF
           ENTORNO="${{ steps.params.outputs.environment }}"
-          
+
           # Las credenciales se cargan desde variables de entorno del sistema
           # No se almacenan en este archivo por seguridad
           EOF
-          
+
           # Ejecutar tests
           set +e  # No fallar si hay errores de tests
-          mvn clean test -Dcucumber.filter.tags="${{ steps.params.outputs.tags }}" -B
+          mvn clean verify -Dcucumber.filter.tags="${{ steps.params.outputs.tags }}" -B
           TEST_EXIT_CODE=$?
           set -e
-          
+
           echo "test_exit_code=$TEST_EXIT_CODE" >> $GITHUB_OUTPUT
-          
+
           # Verificar si se generaron reportes
           if [ -d "reports/${{ steps.params.outputs.env_name }}" ]; then
             echo "reports_generated=true" >> $GITHUB_OUTPUT
@@ -155,19 +157,22 @@ jobs:
         if: always()
         run: |
           echo "📝 Creando metadatos seguros (sin credenciales)"
-          
+
+          # Asegurar que existe el directorio
+          mkdir -p reports/${{ steps.params.outputs.env_name }}
+
           # Crear metadatos SEGUROS
           cat > reports/${{ steps.params.outputs.env_name }}/test-metadata.txt << EOF
-          # SIASIS Test Execution Metadata
-          # Generated: $(date)
-          
+          # SIASIS Test Execution Metadata (GitHub Actions)
+          # Generated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')
+
           ## Execution Parameters
           Entorno: ${{ steps.params.outputs.env_name }}
           Tags ejecutados: ${{ steps.params.outputs.tags }}
           Browser usado: ${{ steps.params.outputs.browser }}
           Ejecución paralela: ${{ steps.params.outputs.parallel }}
           Nombre del reporte: ${{ steps.params.outputs.report_name }}
-          
+
           ## GitHub Action Info
           Repository: ${{ github.repository }}
           Workflow: ${{ github.workflow }}
@@ -175,33 +180,37 @@ jobs:
           Run Number: ${{ github.run_number }}
           Actor: ${{ github.actor }}
           Event: ${{ github.event_name }}
-          
+          Ref: ${{ github.ref }}
+          SHA: ${{ github.sha }}
+
           ## System Info
           Runner OS: ${{ runner.os }}
           Runner Architecture: ${{ runner.arch }}
           Java Version: 17 (Temurin)
           Maven Command: mvn clean verify -Dcucumber.filter.tags="${{ steps.params.outputs.tags }}"
-          
+
           ## Test Results
           Exit Code: ${{ steps.tests.outputs.test_exit_code }}
           Reports Generated: ${{ steps.tests.outputs.reports_generated }}
-          
+
           ## Timestamps
           Started: $(date -u -d '5 minutes ago' '+%Y-%m-%d %H:%M:%S UTC')
           Completed: $(date -u '+%Y-%m-%d %H:%M:%S UTC')
-          
+
           ## Links
           GitHub Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           Repository: https://github.com/${{ github.repository }}
-          
+          GitHub Pages: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
+
           ## Security Note
           🔒 Las credenciales se manejan de forma segura via GitHub Secrets
           🔒 No se almacenan credenciales en este archivo de metadatos
+          🔒 Reportes publicados automáticamente via GitHub Pages
           EOF
-          
+
           echo "✅ Metadatos seguros creados"
 
-      - name: 📊 Upload Test Reports
+      - name: 📊 Upload Test Reports (Backup)
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -222,14 +231,56 @@ jobs:
           reporter: java-junit
           fail-on-error: false
 
-      - name: 🌐 Deploy to GitHub Pages
-        if: steps.tests.outputs.reports_generated == 'true' && github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
-          destination_dir: reports/${{ steps.params.outputs.report_name }}
-          keep_files: true
+      - name: 🚀 Commit and Push Reports to Repository
+        if: steps.tests.outputs.reports_generated == 'true'
+        run: |
+          echo "🚀 Preparando commit de reportes al repositorio"
+
+          # Configurar Git
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action - SIASIS Tests"
+
+          # Verificar estado antes del commit
+          echo "📋 Estado antes del commit:"
+          git status
+
+          # Agregar archivos de reportes
+          git add reports/
+          git add index.html
+
+          # Verificar si hay cambios para commitear
+          if git diff --staged --quiet; then
+            echo "⚠️ No hay cambios en los reportes para commitear"
+          else
+            echo "📝 Creando commit con los nuevos reportes"
+            
+            # Crear mensaje de commit descriptivo
+            COMMIT_MSG="📊 Auto-update test reports - ${{ steps.params.outputs.env_display }}
+            
+            🏷️ Tags: ${{ steps.params.outputs.tags }}
+            🎯 Environment: ${{ steps.params.outputs.env_name }}
+            📝 Report: ${{ steps.params.outputs.report_name }}
+            🌐 Browser: ${{ steps.params.outputs.browser }}
+            ⚡ Parallel: ${{ steps.params.outputs.parallel }}
+            
+            🤖 Generated by GitHub Actions
+            📋 Run: ${{ github.run_id }}
+            👤 Triggered by: ${{ github.actor }}
+            🕐 Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')
+            
+            ${{ steps.tests.outputs.test_exit_code == '0' && '✅ Tests: PASSED' || '❌ Tests: FAILED' }}"
+            
+            # Hacer commit
+            git commit -m "$COMMIT_MSG"
+            
+            # Push al repositorio
+            echo "🚀 Pushing reportes al repositorio..."
+            git push origin ${{ github.ref_name }}
+            
+            echo "✅ Reportes pusheados exitosamente al repositorio"
+            echo "🌐 GitHub Pages se actualizará automáticamente en unos minutos"
+            echo "📖 Dashboard disponible en: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+          fi
 
       - name: 📋 Test Summary
         if: always()
@@ -245,29 +296,29 @@ jobs:
           echo "| ⚡ Paralelo | ${{ steps.params.outputs.parallel }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 🔒 Seguridad | Credenciales protegidas via GitHub Secrets |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "${{ steps.tests.outputs.test_exit_code }}" = "0" ]; then
             echo "### ✅ Resultado: EXITOSO" >> $GITHUB_STEP_SUMMARY
           else
             echo "### ❌ Resultado: FALLÓ" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📊 Reportes Generados:" >> $GITHUB_STEP_SUMMARY
-          
+          echo "### 📊 Reportes:" >> $GITHUB_STEP_SUMMARY
+
           if [ "${{ steps.tests.outputs.reports_generated }}" = "true" ]; then
-            echo "- 📋 [Dashboard Principal](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
-            echo "- 🥒 [Cucumber Reports](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
-            echo "- 🧪 [Surefire Reports](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
-          
-            if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-              echo "- 🌐 [GitHub Pages](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ steps.params.outputs.report_name }}/)" >> $GITHUB_STEP_SUMMARY
-            fi
+            echo "- 🌐 [**GitHub Pages Dashboard**](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/)" >> $GITHUB_STEP_SUMMARY
+            echo "- 📋 [Artifacts de esta ejecución](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+            echo "- 🥒 [Cucumber Reports (${{ steps.params.outputs.env_name }})](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ steps.params.outputs.env_name }}/cucumber-reports/)" >> $GITHUB_STEP_SUMMARY
+            echo "- 🧪 [Surefire Reports (${{ steps.params.outputs.env_name }})](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ steps.params.outputs.env_name }}/surefire-reports/)" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "🚀 **Los reportes han sido pusheados al repositorio y estarán disponibles en GitHub Pages en unos minutos.**" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ No se generaron reportes" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
           echo "*🔒 Ejecución segura - Credenciales protegidas via GitHub Secrets*" >> $GITHUB_STEP_SUMMARY
-          echo "*Ejecutado el $(date) via webhook \`test-siu01-web\`*" >> $GITHUB_STEP_SUMMARY
+          echo "*⚡ Ejecutado el $(date -u) via webhook \`test-siu01-web\`*" >> $GITHUB_STEP_SUMMARY
+          echo "*🌐 Dashboard: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html*" >> $GITHUB_STEP_SUMMARY
