@@ -213,7 +213,23 @@ jobs:
             index.html
           retention-days: 30
 
+      - name: 📈 Publish Test Results
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: 🧪 Tests Results (${{ steps.params.outputs.env_display }})
+          path: target/surefire-reports/*.xml
+          reporter: java-junit
+          fail-on-error: false
 
+      - name: 🌐 Deploy to GitHub Pages
+        if: steps.tests.outputs.reports_generated == 'true' && github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          destination_dir: reports/${{ steps.params.outputs.report_name }}
+          keep_files: true
 
       - name: 📋 Test Summary
         if: always()
