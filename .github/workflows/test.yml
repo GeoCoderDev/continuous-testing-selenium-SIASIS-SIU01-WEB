@@ -164,6 +164,10 @@ jobs:
 
           git fetch origin || true
 
+          # 🗑️ Limpiar archivos actuales para evitar conflictos
+          rm -f index.html || true
+          rm -rf reports/${{ steps.params.outputs.env_name }} || true
+
           if git ls-remote --exit-code --heads origin test-results > /dev/null 2>&1; then
             echo "✅ Rama test-results existe, haciendo checkout..."
             git checkout test-results
@@ -175,15 +179,12 @@ jobs:
             git commit --allow-empty -m "🆕 Inicializar rama test-results"
           fi
 
-          # Ahora, copiar y sobrescribir SOLO los elementos relevantes para este entorno
-
+          # ✅ Copiando los artefactos para este entorno
           if [ "${{ steps.params.outputs.env_name }}" = "dev" ]; then
-            echo "✅ Copiando reports/dev e index.html para DEV..."
             rm -rf reports/dev
             cp -r ../reports/dev ./reports/
             cp ../index.html ./
           elif [ "${{ steps.params.outputs.env_name }}" = "cert" ]; then
-            echo "✅ Copiando reports/cert e index.html para CERT..."
             rm -rf reports/cert
             cp -r ../reports/cert ./reports/
             cp ../index.html ./
@@ -211,11 +212,11 @@ jobs:
             ${{ steps.tests.outputs.test_exit_code == '0' && '✅ Tests: PASSED' || '❌ Tests: FAILED' }}"
             
             git commit -m "$COMMIT_MSG"
-            
+
             echo "🚀 Pushing reportes a la rama test-results..."
             git push origin test-results
             echo "✅ Reportes pusheados exitosamente a test-results."
-            echo "🌐 GitHub Pages actualizará en minutos."
+            echo "🌐 GitHub Pages actualizado en minutos."
           fi
 
       - name: 📋 Test Summary
