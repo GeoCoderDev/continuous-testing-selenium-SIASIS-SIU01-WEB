@@ -6,6 +6,13 @@ on:
   repository_dispatch:
     types: [test-siu01-web]
 
+permissions:
+  contents: write       # Para hacer commits de reportes
+  actions: read         # Para leer artifacts
+  checks: write         # Para dorny/test-reporter
+  pull-requests: write  # Para comentarios en PRs (opcional)
+  statuses: write       # Para status checks (opcional)
+  
 jobs:
   test-automation:
     name: 🧪 Execute SIASIS Tests
