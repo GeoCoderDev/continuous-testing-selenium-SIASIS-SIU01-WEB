@@ -243,14 +243,54 @@ jobs:
           reporter: java-junit
           fail-on-error: false
 
-      - name: 🚀 Commit and Push Reports to Repository
+      - name: 🚀 Commit and Push Reports to test-results Branch
         if: steps.tests.outputs.reports_generated == 'true'
         run: |
-          echo "🚀 Preparando commit de reportes al repositorio"
+          echo "🚀 Preparando commit de reportes a la rama test-results"
 
           # Configurar Git
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action - SIASIS Tests"
+
+          # Verificar si la rama test-results existe remotamente
+          echo "🔍 Verificando rama test-results..."
+          git fetch origin || true
+          
+          if git ls-remote --exit-code --heads origin test-results > /dev/null 2>&1; then
+            echo "✅ Rama test-results existe, haciendo checkout..."
+            git checkout test-results
+            git pull origin test-results
+          else
+            echo "🆕 Creando nueva rama test-results..."
+            git checkout --orphan test-results
+            
+            # Limpiar el área de staging en rama huérfana
+            git rm -rf . --quiet || true
+            
+            # Crear README inicial para la rama
+            cat > README.md << EOF
+          # 📊 SIASIS Test Results
+
+          Esta rama contiene los reportes automatizados de testing para el sistema SIASIS.
+
+          ## 🌐 Ver Reportes
+          - **GitHub Pages**: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
+          - **Dashboard Principal**: [index.html](./index.html)
+
+          ## 📁 Estructura
+          - \`reports/dev/\` - Reportes del entorno de desarrollo
+          - \`reports/cert/\` - Reportes del entorno de certificación
+          - \`index.html\` - Dashboard principal con navegación
+
+          ## 🤖 Automatización
+          Los reportes se actualizan automáticamente via GitHub Actions.
+          
+          **Última actualización**: $(date -u '+%Y-%m-%d %H:%M:%S UTC')
+          EOF
+            
+            git add README.md
+            git commit -m "🆕 Inicializar rama test-results"
+          fi
 
           # Verificar estado antes del commit
           echo "📋 Estado antes del commit:"
@@ -285,14 +325,14 @@ jobs:
             # Hacer commit
             git commit -m "$COMMIT_MSG"
             
-            # Push al repositorio
-            echo "🚀 Pushing reportes al repositorio..."
-            git push origin ${{ github.ref_name }}
+            # Push a la rama test-results
+            echo "🚀 Pushing reportes a la rama test-results..."
+            git push origin test-results
             
-            echo "✅ Reportes pusheados exitosamente al repositorio"
+            echo "✅ Reportes pusheados exitosamente a la rama test-results"
             echo "🌐 GitHub Pages se actualizará automáticamente en unos minutos"
             echo "📖 Dashboard disponible en: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
-          fi
+          fi  
 
       - name: 📋 Test Summary
         if: always()
@@ -307,6 +347,7 @@ jobs:
           echo "| 🌐 Browser | ${{ steps.params.outputs.browser }} |" >> $GITHUB_STEP_SUMMARY
           echo "| ⚡ Paralelo | ${{ steps.params.outputs.parallel }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 🔒 Seguridad | Credenciales protegidas via GitHub Secrets |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📊 Rama Reportes | \`test-results\` |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           if [ "${{ steps.tests.outputs.test_exit_code }}" = "0" ]; then
@@ -321,10 +362,11 @@ jobs:
           if [ "${{ steps.tests.outputs.reports_generated }}" = "true" ]; then
             echo "- 🌐 [**GitHub Pages Dashboard**](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/)" >> $GITHUB_STEP_SUMMARY
             echo "- 📋 [Artifacts de esta ejecución](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+            echo "- 🏠 [Rama test-results](https://github.com/${{ github.repository }}/tree/test-results)" >> $GITHUB_STEP_SUMMARY
             echo "- 🥒 [Cucumber Reports (${{ steps.params.outputs.env_name }})](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ steps.params.outputs.env_name }}/cucumber-reports/)" >> $GITHUB_STEP_SUMMARY
             echo "- 🧪 [Surefire Reports (${{ steps.params.outputs.env_name }})](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ steps.params.outputs.env_name }}/surefire-reports/)" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "🚀 **Los reportes han sido pusheados al repositorio y estarán disponibles en GitHub Pages en unos minutos.**" >> $GITHUB_STEP_SUMMARY
+            echo "🚀 **Los reportes han sido pusheados a la rama \`test-results\` y estarán disponibles en GitHub Pages en unos minutos.**" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ No se generaron reportes" >> $GITHUB_STEP_SUMMARY
           fi
@@ -333,4 +375,6 @@ jobs:
           echo "---" >> $GITHUB_STEP_SUMMARY
           echo "*🔒 Ejecución segura - Credenciales protegidas via GitHub Secrets*" >> $GITHUB_STEP_SUMMARY
           echo "*⚡ Ejecutado el $(date -u) via webhook \`test-siu01-web\`*" >> $GITHUB_STEP_SUMMARY
+          echo "*📊 Reportes en rama: \`test-results\`*" >> $GITHUB_STEP_SUMMARY
           echo "*🌐 Dashboard: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html*" >> $GITHUB_STEP_SUMMARY
+          
