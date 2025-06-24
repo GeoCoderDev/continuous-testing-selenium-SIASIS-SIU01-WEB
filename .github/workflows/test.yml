@@ -12,7 +12,7 @@ permissions:
   checks: write         # Para dorny/test-reporter
   pull-requests: write  # Para comentarios en PRs (opcional)
   statuses: write       # Para status checks (opcional)
-  
+
 jobs:
   test-automation:
     name: 🧪 Execute SIASIS Tests
@@ -84,6 +84,7 @@ jobs:
           echo "browser=$BROWSER" >> $GITHUB_OUTPUT
           echo "parallel=$PARALLEL" >> $GITHUB_OUTPUT
 
+
       - name: 🔐 Setup Environment Variables
         run: |
           echo "🔐 Configurando variables de entorno para ${{ steps.params.outputs.env_display }}"
@@ -91,6 +92,9 @@ jobs:
           # Variables de entorno base
           echo "ENTORNO=${{ steps.params.outputs.environment }}" >> $GITHUB_ENV
           echo "BROWSER=${{ steps.params.outputs.browser }}" >> $GITHUB_ENV
+          
+          # ✨ NUEVA VARIABLE: Habilitar modo headless para GitHub Actions
+          echo "CI_HEADLESS_MODE=true" >> $GITHUB_ENV
 
           # Credenciales por entorno
           if [ "${{ steps.params.outputs.environment }}" = "D" ]; then
@@ -128,7 +132,8 @@ jobs:
           fi
 
           echo "✅ Variables de entorno configuradas"
-
+          echo "🤖 Modo headless habilitado para GitHub Actions"
+          
       - name: 🧪 Execute Tests
         id: tests
         run: |

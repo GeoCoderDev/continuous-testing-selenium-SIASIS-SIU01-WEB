@@ -54,18 +54,18 @@
         .header {
             text-align: center;
             color: white;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
             animation: slideDown 1s ease-out;
         }
 
         @keyframes slideDown {
-            from { transform: translateY(-50px); opacity: 0; }
+            from { transform: translateY(-30px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
 
         .header h1 {
-            font-size: 3.5rem;
-            margin-bottom: 10px;
+            font-size: 2.5rem;
+            margin-bottom: 5px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             background: linear-gradient(45deg, #fff, #f0f8ff, #e6f3ff);
             -webkit-background-clip: text;
@@ -74,15 +74,15 @@
         }
 
         .header p {
-            font-size: 1.2rem;
+            font-size: 1rem;
             opacity: 0.9;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         .timestamp {
-            font-size: 1rem;
+            font-size: 0.9rem;
             opacity: 0.8;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .environment-detector {
@@ -303,190 +303,190 @@
     </style>
 </head>
 <body>
-<div class="stars" id="stars"></div>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <header class="header">
+            <h1>🚀 SIASIS Testing Dashboard</h1>
+            <p>Sistema de Control de Asistencia - I.E. 20935 Asunción 8</p>
+            <p>📊 Portal de Reportes de Testing Automatizado</p>
+            <div class="timestamp">📅 Último reporte generado: <span id="timestamp"></span></div>
+        </header>
 
-<div class="container">
-    <header class="header">
-        <h1>🚀 SIASIS Testing Dashboard</h1>
-        <p>Sistema de Control de Asistencia - I.E. 20935 Asunción 8</p>
-        <p>📊 Portal de Reportes de Testing Automatizado</p>
-        <div class="timestamp">📅 Último reporte generado: <span id="timestamp"></span></div>
-    </header>
-
-    <div class="environment-detector">
-        <div class="environment-status">
-            <span>🌍 Entorno Actual:</span>
-            <span id="environmentBadge" class="env-badge env-current">AMBIENTE DETECTADO</span>
+        <div class="environment-detector">
+            <div class="environment-status">
+                <span>🌍 Entorno Actual:</span>
+                <span id="environmentBadge" class="env-badge env-current">AMBIENTE DETECTADO</span>
+            </div>
+            
+            <div class="environment-selector">
+                <button class="env-button" onclick="switchEnvironment('dev')" id="btnDev">
+                    🛠️ Desarrollo
+                </button>
+                <button class="env-button" onclick="switchEnvironment('cert')" id="btnCert">
+                    🎯 Certificación
+                </button>
+            </div>
         </div>
 
-        <div class="environment-selector">
-            <button class="env-button" onclick="switchEnvironment('dev')" id="btnDev">
-                🛠️ Desarrollo
-            </button>
-            <button class="env-button" onclick="switchEnvironment('cert')" id="btnCert">
-                🎯 Certificación
-            </button>
+        <div class="reports-grid">
+            <!-- Cucumber Reports -->
+            <div class="report-card">
+                <div class="report-header">
+                    <div class="report-icon">🥒</div>
+                    <div>
+                        <div class="report-title">Reportes de Cucumber</div>
+                        <div class="report-description">Reportes de características y escenarios BDD</div>
+                    </div>
+                </div>
+                <div class="report-links">
+                    <a href="#" class="report-link" id="cucumberMain">
+                        <span class="link-icon">📋</span>
+                        <span>Reporte Principal</span>
+                    </a>
+                    <a href="#" class="report-link" id="cucumberHtml">
+                        <span class="link-icon">📈</span>
+                        <span>HTML Reports</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Surefire Reports -->
+            <div class="report-card">
+                <div class="report-header">
+                    <div class="report-icon">🧪</div>
+                    <div>
+                        <div class="report-title">Reportes de Surefire</div>
+                        <div class="report-description">Reportes de ejecución de tests JUnit</div>
+                    </div>
+                </div>
+                <div class="report-links">
+                    <a href="#" class="report-link" id="surefireReports">
+                        <span class="link-icon">📄</span>
+                        <span>Reportes XML/TXT</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Metadatos -->
+            <div class="report-card">
+                <div class="report-header">
+                    <div class="report-icon">📦</div>
+                    <div>
+                        <div class="report-title">Metadatos</div>
+                        <div class="report-description">Información de ejecución y configuración</div>
+                    </div>
+                </div>
+                <div class="report-links">
+                    <a href="#" class="report-link" id="testMetadata">
+                        <span class="link-icon">ℹ️</span>
+                        <span>Test Metadata</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Utilidades -->
+            <div class="report-card">
+                <div class="report-header">
+                    <div class="report-icon">⚙️</div>
+                    <div>
+                        <div class="report-title">Utilidades</div>
+                        <div class="report-description">Herramientas y comandos útiles</div>
+                    </div>
+                </div>
+                <div class="report-links">
+                    <a href="#" class="report-link" onclick="showCommands()">
+                        <span class="link-icon">💻</span>
+                        <span>Comandos Maven</span>
+                    </a>
+                    <a href="#" class="report-link" onclick="showHelp()">
+                        <span class="link-icon">❓</span>
+                        <span>Ayuda</span>
+                    </a>
+                </div>
+            </div>
         </div>
+
+        <footer class="footer">
+            <p>🏫 I.E. 20935 Asunción 8 - Imperial, Cañete</p>
+            <p>🔧 Sistema de Testing Automatizado con Selenium + Cucumber</p>
+            <p>🚀 <strong>Comandos:</strong> DEV: <code>$env:ENTORNO="D"; mvn clean verify</code> | CERT: <code>$env:ENTORNO="C"; mvn clean verify</code></p>
+        </footer>
     </div>
 
-    <div class="reports-grid">
-        <!-- Cucumber Reports -->
-        <div class="report-card">
-            <div class="report-header">
-                <div class="report-icon">🥒</div>
-                <div>
-                    <div class="report-title">Reportes de Cucumber</div>
-                    <div class="report-description">Reportes de características y escenarios BDD</div>
-                </div>
-            </div>
-            <div class="report-links">
-                <a href="#" class="report-link" id="cucumberMain">
-                    <span class="link-icon">📋</span>
-                    <span>Reporte Principal</span>
-                </a>
-                <a href="#" class="report-link" id="cucumberHtml">
-                    <span class="link-icon">📈</span>
-                    <span>HTML Reports</span>
-                </a>
-            </div>
-        </div>
+    <button class="refresh-btn" onclick="updateTimestamp()" title="Actualizar timestamp">
+        🔄
+    </button>
 
-        <!-- Surefire Reports -->
-        <div class="report-card">
-            <div class="report-header">
-                <div class="report-icon">🧪</div>
-                <div>
-                    <div class="report-title">Reportes de Surefire</div>
-                    <div class="report-description">Reportes de ejecución de tests JUnit</div>
-                </div>
-            </div>
-            <div class="report-links">
-                <a href="#" class="report-link" id="surefireReports">
-                    <span class="link-icon">📄</span>
-                    <span>Reportes XML/TXT</span>
-                </a>
-            </div>
-        </div>
+    <script>
+        let currentEnvironment = 'dev'; // Por defecto
 
-        <!-- Metadatos -->
-        <div class="report-card">
-            <div class="report-header">
-                <div class="report-icon">📦</div>
-                <div>
-                    <div class="report-title">Metadatos</div>
-                    <div class="report-description">Información de ejecución y configuración</div>
-                </div>
-            </div>
-            <div class="report-links">
-                <a href="#" class="report-link" id="testMetadata">
-                    <span class="link-icon">ℹ️</span>
-                    <span>Test Metadata</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- Utilidades -->
-        <div class="report-card">
-            <div class="report-header">
-                <div class="report-icon">⚙️</div>
-                <div>
-                    <div class="report-title">Utilidades</div>
-                    <div class="report-description">Herramientas y comandos útiles</div>
-                </div>
-            </div>
-            <div class="report-links">
-                <a href="#" class="report-link" onclick="showCommands()">
-                    <span class="link-icon">💻</span>
-                    <span>Comandos Maven</span>
-                </a>
-                <a href="#" class="report-link" onclick="showHelp()">
-                    <span class="link-icon">❓</span>
-                    <span>Ayuda</span>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <footer class="footer">
-        <p>🏫 I.E. 20935 Asunción 8 - Imperial, Cañete</p>
-        <p>🔧 Sistema de Testing Automatizado con Selenium + Cucumber</p>
-        <p>🚀 <strong>Comandos:</strong> DEV: <code>$env:ENTORNO="D"; mvn clean verify</code> | CERT: <code>$env:ENTORNO="C"; mvn clean verify</code></p>
-    </footer>
-</div>
-
-<button class="refresh-btn" onclick="updateTimestamp()" title="Actualizar timestamp">
-    🔄
-</button>
-
-<script>
-    let currentEnvironment = 'dev'; // Por defecto
-
-    // Crear estrellas animadas
-    function createStars() {
-        const starsContainer = document.getElementById('stars');
-        for (let i = 0; i < 100; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.animationDelay = Math.random() * 3 + 's';
-            starsContainer.appendChild(star);
+        // Crear estrellas animadas
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
         }
-    }
 
-    // Cambiar entorno
-    function switchEnvironment(env) {
-        currentEnvironment = env;
+        // Cambiar entorno
+        function switchEnvironment(env) {
+            currentEnvironment = env;
+            
+            // Actualizar botones
+            document.querySelectorAll('.env-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('btn' + env.charAt(0).toUpperCase() + env.slice(1)).classList.add('active');
+            
+            // Actualizar badge
+            const badge = document.getElementById('environmentBadge');
+            badge.textContent = env === 'dev' ? 'DESARROLLO 🛠️' : 'CERTIFICACIÓN 🎯';
+            badge.className = 'env-badge env-' + env;
+            
+            // Actualizar enlaces
+            updateLinks();
+        }
 
-        // Actualizar botones
-        document.querySelectorAll('.env-button').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.getElementById('btn' + env.charAt(0).toUpperCase() + env.slice(1)).classList.add('active');
+        // Actualizar enlaces según el entorno
+        function updateLinks() {
+            const basePath = `reports/${currentEnvironment}/`;
+            
+            document.getElementById('cucumberMain').href = basePath + 'cucumber-reports/index.html';
+            document.getElementById('cucumberHtml').href = basePath + 'cucumber-html-reports/';
+            document.getElementById('surefireReports').href = basePath + 'surefire-reports/';
+            document.getElementById('testMetadata').href = basePath + 'test-metadata.txt';
+        }
 
-        // Actualizar badge
-        const badge = document.getElementById('environmentBadge');
-        badge.textContent = env === 'dev' ? 'DESARROLLO 🛠️' : 'CERTIFICACIÓN 🎯';
-        badge.className = 'env-badge env-' + env;
+        // Actualizar timestamp
+        function updateTimestamp() {
+            const timestamp = document.getElementById('timestamp');
+            const now = new Date();
+            timestamp.textContent = now.toLocaleString('es-ES', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            // Efecto de rotación en el botón
+            const btn = document.querySelector('.refresh-btn');
+            btn.style.transform = 'scale(1.1) rotate(360deg)';
+            setTimeout(() => {
+                btn.style.transform = 'scale(1) rotate(0deg)';
+            }, 1000);
+        }
 
-        // Actualizar enlaces
-        updateLinks();
-    }
-
-    // Actualizar enlaces según el entorno
-    function updateLinks() {
-        const basePath = `reports/${currentEnvironment}/`;
-
-        document.getElementById('cucumberMain').href = basePath + 'cucumber-reports/index.html';
-        document.getElementById('cucumberHtml').href = basePath + 'cucumber-html-reports/';
-        document.getElementById('surefireReports').href = basePath + 'surefire-reports/';
-        document.getElementById('testMetadata').href = basePath + 'test-metadata.txt';
-    }
-
-    // Actualizar timestamp
-    function updateTimestamp() {
-        const timestamp = document.getElementById('timestamp');
-        const now = new Date();
-        timestamp.textContent = now.toLocaleString('es-ES', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
-
-        // Efecto de rotación en el botón
-        const btn = document.querySelector('.refresh-btn');
-        btn.style.transform = 'scale(1.1) rotate(360deg)';
-        setTimeout(() => {
-            btn.style.transform = 'scale(1) rotate(0deg)';
-        }, 1000);
-    }
-
-    // Mostrar comandos
-    function showCommands() {
-        const commands = `
+        // Mostrar comandos
+        function showCommands() {
+            const commands = `
 🚀 COMANDOS MAVEN PARA SIASIS
 
 📊 EJECUTAR TESTS:
@@ -505,13 +505,13 @@
 • Usa diferentes entornos para comparar resultados
 • Los reportes se mantienen separados por entorno
 • Revisa test-metadata.txt para detalles de ejecución
-        `;
-        alert(commands);
-    }
+            `;
+            alert(commands);
+        }
 
-    // Mostrar ayuda
-    function showHelp() {
-        const help = `
+        // Mostrar ayuda
+        function showHelp() {
+            const help = `
 🎯 SIASIS TESTING DASHBOARD - AYUDA
 
 📋 NAVEGACIÓN:
@@ -536,27 +536,27 @@ reports/
 │   ├── surefire-reports/
 │   └── test-metadata.txt
 └── cert/    (ENTORNO="C")
-├── cucumber-reports/
-├── surefire-reports/
-└── test-metadata.txt
+    ├── cucumber-reports/
+    ├── surefire-reports/
+    └── test-metadata.txt
 
 💡 ¿PROBLEMAS?
 • Verifica que hayas ejecutado mvn clean verify
 • Asegúrate de estar en el directorio correcto
 • Comprueba que la variable ENTORNO esté configurada
-        `;
-        alert(help);
-    }
+            `;
+            alert(help);
+        }
 
-    // Inicialización
-    document.addEventListener('DOMContentLoaded', function() {
-        createStars();
-        updateTimestamp();
-        switchEnvironment('dev'); // Empezar con desarrollo
-    });
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            updateTimestamp();
+            switchEnvironment('dev'); // Empezar con desarrollo
+        });
 
-    // Auto-actualizar timestamp cada minuto
-    setInterval(updateTimestamp, 60000);
-</script>
+        // Auto-actualizar timestamp cada minuto
+        setInterval(updateTimestamp, 60000);
+    </script>
 </body>
 </html>
