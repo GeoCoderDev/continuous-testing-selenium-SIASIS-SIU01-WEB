@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 SIASIS - Dashboard de Reportes de Testing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: slideDown 1s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #fff, #f0f8ff, #e6f3ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .environment-detector {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .environment-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            color: white;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .env-badge {
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: pulse 2s infinite;
+        }
+
+        .env-dev { background: linear-gradient(45deg, #4CAF50, #45a049); }
+        .env-cert { background: linear-gradient(45deg, #ff9800, #f57c00); }
+        .env-unknown { background: linear-gradient(45deg, #757575, #616161); }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .report-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 1s ease-out forwards;
+            opacity: 0;
+        }
+
+        .report-card:nth-child(1) { animation-delay: 0.2s; }
+        .report-card:nth-child(2) { animation-delay: 0.4s; }
+        .report-card:nth-child(3) { animation-delay: 0.6s; }
+        .report-card:nth-child(4) { animation-delay: 0.8s; }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .report-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 45px rgba(0,0,0,0.2);
+        }
+
+        .report-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .report-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .report-icon {
+            font-size: 2.5rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .report-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .report-description {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .report-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .report-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            text-decoration: none;
+            color: #495057;
+            transition: all 0.3s ease;
+            border: 1px solid #dee2e6;
+        }
+
+        .report-link:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .link-icon {
+            font-size: 1.2rem;
+            width: 25px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-left: auto;
+        }
+
+        .status-available { background: #4CAF50; }
+        .status-unavailable { background: #f44336; }
+        .status-checking {
+            background: #ff9800;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        .footer {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .refresh-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.1) rotate(180deg);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.4);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: white;
+            font-size: 1.1rem;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2.5rem; }
+            .reports-grid { grid-template-columns: 1fr; }
+            .container { padding: 15px; }
+            .report-card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+
+<div class="container">
+    <header class="header">
+        <h1>🚀 SIASIS Testing Dashboard</h1>
+        <p>Sistema de Control de Asistencia - I.E. 20935 Asunción 8</p>
+        <p>📊 Portal de Reportes de Testing Automatizado</p>
+    </header>
+
+    <div class="environment-detector">
+        <div class="environment-status">
+            <span>🌍 Entorno Detectado:</span>
+            <span id="environmentBadge" class="env-badge env-unknown">Detectando...</span>
+        </div>
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <div>Escaneando reportes disponibles...</div>
+        </div>
+    </div>
+
+    <div class="reports-grid" id="reportsGrid">
+        <!-- Cucumber Reports -->
+        <div class="report-card">
+            <div class="report-header">
+                <div class="report-icon">🥒</div>
+                <div>
+                    <div class="report-title">Reportes de Cucumber</div>
+                    <div class="report-description">Reportes de características y escenarios BDD</div>
+                </div>
+            </div>
+            <div class="report-links">
+                <a href="#" class="report-link" data-path="cucumber-reports/index.html">
+                    <span class="link-icon">📋</span>
+                    <span>Reporte Principal</span>
+                    <span class="status-indicator status-checking" data-check="cucumber-reports/index.html"></span>
+                </a>
+                <a href="#" class="report-link" data-path="cucumber-html-reports/overview-features.html">
+                    <span class="link-icon">📈</span>
+                    <span>Overview Features</span>
+                    <span class="status-indicator status-checking" data-check="cucumber-html-reports/overview-features.html"></span>
+                </a>
+                <a href="#" class="report-link" data-path="cucumber-html-reports/overview-steps.html">
+                    <span class="link-icon">👣</span>
+                    <span>Overview Steps</span>
+                    <span class="status-indicator status-checking" data-check="cucumber-html-reports/overview-steps.html"></span>
+                </a>
+                <a href="#" class="report-link" data-path="cucumber-html-reports/overview-failures.html">
+                    <span class="link-icon">❌</span>
+                    <span>Overview Failures</span>
+                    <span class="status-indicator status-checking" data-check="cucumber-html-reports/overview-failures.html"></span>
+                </a>
+                <a href="#" class="report-link" data-path="cucumber-html-reports/overview-tags.html">
+                    <span class="link-icon">🏷️</span>
+                    <span>Overview Tags</span>
+                    <span class="status-indicator status-checking" data-check="cucumber-html-reports/overview-tags.html"></span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Surefire Reports -->
+        <div class="report-card">
+            <div class="report-header">
+                <div class="report-icon">🧪</div>
+                <div>
+                    <div class="report-title">Reportes de Surefire</div>
+                    <div class="report-description">Reportes de ejecución de tests JUnit</div>
+                </div>
+            </div>
+            <div class="report-links">
+                <a href="#" class="report-link" data-path="surefire-reports/">
+                    <span class="link-icon">📄</span>
+                    <span>Reportes XML/TXT</span>
+                    <span class="status-indicator status-checking" data-check="surefire-reports/"></span>
+                </a>
+                <a href="#" class="report-link" onclick="showSurefireFiles()">
+                    <span class="link-icon">🗂️</span>
+                    <span>Archivos Individuales</span>
+                    <span class="status-indicator status-available"></span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Reportes JSON -->
+        <div class="report-card">
+            <div class="report-header">
+                <div class="report-icon">📦</div>
+                <div>
+                    <div class="report-title">Datos JSON</div>
+                    <div class="report-description">Archivos JSON para integración y análisis</div>
+                </div>
+            </div>
+            <div class="report-links">
+                <a href="#" class="report-link" data-path="cucumber/cucumber.json">
+                    <span class="link-icon">📝</span>
+                    <span>Cucumber JSON</span>
+                    <span class="status-indicator status-checking" data-check="cucumber/cucumber.json"></span>
+                </a>
+                <a href="#" class="report-link" onclick="downloadAllReports()">
+                    <span class="link-icon">💾</span>
+                    <span>Descargar Todo</span>
+                    <span class="status-indicator status-available"></span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Utilidades -->
+        <div class="report-card">
+            <div class="report-header">
+                <div class="report-icon">⚙️</div>
+                <div>
+                    <div class="report-title">Utilidades</div>
+                    <div class="report-description">Herramientas adicionales y metadatos</div>
+                </div>
+            </div>
+            <div class="report-links">
+                <a href="#" class="report-link" data-path="test-metadata.txt">
+                    <span class="link-icon">ℹ️</span>
+                    <span>Metadatos de Ejecución</span>
+                    <span class="status-indicator status-checking" data-check="test-metadata.txt"></span>
+                </a>
+                <a href="#" class="report-link" onclick="openTargetFolder()">
+                    <span class="link-icon">📁</span>
+                    <span>Ver Target Original</span>
+                    <span class="status-indicator status-available"></span>
+                </a>
+                <a href="#" class="report-link" onclick="showHelp()">
+                    <span class="link-icon">❓</span>
+                    <span>Ayuda y Documentación</span>
+                    <span class="status-indicator status-available"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>🏫 I.E. 20935 Asunción 8 - Imperial, Cañete</p>
+        <p>🔧 Sistema de Testing Automatizado con Selenium + Cucumber</p>
+        <p id="lastUpdate">Última actualización: <span id="timestamp">Cargando...</span></p>
+    </footer>
+</div>
+
+<button class="refresh-btn" onclick="refreshReports()" title="Actualizar estado de reportes">
+    🔄
+</button>
+
+<script>
+    class SIASISReportsDashboard {
+        constructor() {
+            this.currentEnvironment = 'unknown';
+            this.basePath = '';
+            this.init();
+        }
+
+        async init() {
+            this.createStars();
+            this.updateTimestamp();
+            await this.detectEnvironment();
+            await this.checkReportAvailability();
+            this.setupEventListeners();
+        }
+
+        createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        async detectEnvironment() {
+            const loading = document.getElementById('loading');
+            const badge = document.getElementById('environmentBadge');
+
+            loading.style.display = 'block';
+
+            try {
+                // Detectar entorno basado en la URL actual o estructura de carpetas
+                const currentPath = window.location.pathname;
+
+                if (currentPath.includes('/dev/') || currentPath.includes('reports/dev')) {
+                    this.currentEnvironment = 'dev';
+                    this.basePath = this.currentEnvironment + '/';
+                } else if (currentPath.includes('/cert/') || currentPath.includes('reports/cert')) {
+                    this.currentEnvironment = 'cert';
+                    this.basePath = this.currentEnvironment + '/';
+                } else {
+                    // Intentar detectar automáticamente
+                    const devExists = await this.checkFileExists('reports/dev/test-metadata.txt');
+                    const certExists = await this.checkFileExists('reports/cert/test-metadata.txt');
+
+                    if (devExists && !certExists) {
+                        this.currentEnvironment = 'dev';
+                        this.basePath = 'reports/dev/';
+                    } else if (certExists && !devExists) {
+                        this.currentEnvironment = 'cert';
+                        this.basePath = 'reports/cert/';
+                    } else if (devExists && certExists) {
+                        // Ambos existen, usar el más reciente
+                        this.currentEnvironment = await this.getMostRecentEnvironment();
+                        this.basePath = 'reports/' + this.currentEnvironment + '/';
+                    } else {
+                        // Ninguno existe, buscar en target/
+                        this.currentEnvironment = 'target';
+                        this.basePath = 'target/';
+                    }
+                }
+
+                // Actualizar badge
+                badge.textContent = this.getEnvironmentDisplayName();
+                badge.className = 'env-badge env-' + this.currentEnvironment;
+
+            } catch (error) {
+                console.error('Error detectando entorno:', error);
+                badge.textContent = 'Error';
+                badge.className = 'env-badge env-unknown';
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        getEnvironmentDisplayName() {
+            switch (this.currentEnvironment) {
+                case 'dev': return 'Desarrollo 🛠️';
+                case 'cert': return 'Certificación 🎯';
+                case 'target': return 'Target 📁';
+                default: return 'Desconocido ❓';
+            }
+        }
+
+        async checkFileExists(path) {
+            try {
+                const response = await fetch(path, { method: 'HEAD' });
+                return response.ok;
+            } catch {
+                return false;
+            }
+        }
+
+        async getMostRecentEnvironment() {
+            try {
+                const devMeta = await fetch('reports/dev/test-metadata.txt').then(r => r.text());
+                const certMeta = await fetch('reports/cert/test-metadata.txt').then(r => r.text());
+
+                const devDate = this.extractDateFromMetadata(devMeta);
+                const certDate = this.extractDateFromMetadata(certMeta);
+
+                return devDate > certDate ? 'dev' : 'cert';
+            } catch {
+                return 'dev'; // Por defecto
+            }
+        }
+
+        extractDateFromMetadata(metadata) {
+            const match = metadata.match(/Fecha de ejecución: (.+)/);
+            return match ? new Date(match[1]) : new Date(0);
+        }
+
+        async checkReportAvailability() {
+            const indicators = document.querySelectorAll('.status-indicator[data-check]');
+
+            for (const indicator of indicators) {
+                const path = this.basePath + indicator.dataset.check;
+                const exists = await this.checkFileExists(path);
+
+                indicator.className = 'status-indicator ' +
+                    (exists ? 'status-available' : 'status-unavailable');
+
+                // Actualizar enlace padre
+                const link = indicator.closest('.report-link');
+                if (link && link.dataset.path) {
+                    if (exists) {
+                        link.href = this.basePath + link.dataset.path;
+                        link.onclick = null;
+                    } else {
+                        link.href = '#';
+                        link.onclick = (e) => {
+                            e.preventDefault();
+                            this.showNotAvailable(link.dataset.path);
+                        };
+                    }
+                }
+            }
+        }
+
+        setupEventListeners() {
+            // Actualizar enlaces dinámicos
+            document.querySelectorAll('.report-link[data-path]').forEach(link => {
+                if (!link.onclick) {
+                    const path = this.basePath + link.dataset.path;
+                    link.href = path;
+                }
+            });
+        }
+
+        showNotAvailable(path) {
+            alert(`📋 Reporte no disponible\n\nArchivo: ${path}\nEntorno: ${this.currentEnvironment.toUpperCase()}\n\n💡 Ejecuta 'mvn test' para generar los reportes.`);
+        }
+
+        updateTimestamp() {
+            const timestamp = document.getElementById('timestamp');
+            timestamp.textContent = new Date().toLocaleString('es-ES');
+        }
+
+        async refreshReports() {
+            const btn = document.querySelector('.refresh-btn');
+            btn.style.transform = 'scale(1.1) rotate(360deg)';
+
+            await this.detectEnvironment();
+            await this.checkReportAvailability();
+            this.updateTimestamp();
+
+            setTimeout(() => {
+                btn.style.transform = 'scale(1) rotate(0deg)';
+            }, 1000);
+        }
+    }
+
+    // Funciones globales
+    function refreshReports() {
+        window.dashboard.refreshReports();
+    }
+
+    function showSurefireFiles() {
+        const env = window.dashboard.currentEnvironment;
+        const path = window.dashboard.basePath + 'surefire-reports/';
+        window.open(path, '_blank');
+    }
+
+    function downloadAllReports() {
+        alert('🚧 Función en desarrollo\n\nPróximamente podrás descargar todos los reportes en un ZIP.');
+    }
+
+    function openTargetFolder() {
+        window.open('target/', '_blank');
+    }
+
+    function showHelp() {
+        const helpText = `
+🚀 SIASIS Testing Dashboard - Ayuda
+
+📊 TIPOS DE REPORTES:
+• Cucumber: Reportes BDD de características y escenarios
+• Surefire: Reportes de ejecución JUnit
+• JSON: Datos estructurados para integración
+
+🌍 ENTORNOS:
+• DEV: Entorno de desarrollo
+• CERT: Entorno de certificación
+• TARGET: Reportes estándar de Maven
+
+🔄 ACTUALIZACIÓN:
+• Los reportes se generan automáticamente al ejecutar 'mvn test'
+• Usa el botón 🔄 para actualizar el estado
+• Los indicadores de color muestran disponibilidad
+
+📁 ESTRUCTURA:
+reports/
+├── dev/     (ENTORNO=D)
+└── cert/    (ENTORNO=C)
+
+💡 CONSEJOS:
+• Ejecuta tests en diferentes entornos modificando ENTORNO en .env
+• Los reportes se mantienen por separado para comparación
+• Revisa test-metadata.txt para información de ejecución
+        `;
+        alert(helpText);
+    }
+
+    // Inicializar dashboard
+    window.addEventListener('DOMContentLoaded', () => {
+        window.dashboard = new SIASISReportsDashboard();
+    });
+
+    // Auto-refresh cada 30 segundos
+    setInterval(() => {
+        if (document.visibilityState === 'visible') {
+            window.dashboard?.checkReportAvailability();
+        }
+    }, 30000);
+</script>
+</body>
+</html>

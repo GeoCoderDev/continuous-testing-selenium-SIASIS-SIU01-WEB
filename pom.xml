@@ -12,10 +12,14 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Propiedad para detectar el entorno automáticamente -->
+        <environment.name>dev</environment.name>
     </properties>
 
     <build>
         <plugins>
+            <!-- Surefire Plugin (mantienes tu configuración actual) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -27,12 +31,10 @@
                             cucumber.junit-platform.naming-strategy=long
                         </configurationParameters>
                     </properties>
-                    <!-- CONFIGURACIÓN CRÍTICA AÑADIDA -->
                     <systemPropertyVariables>
                         <cucumber.filter.tags>${cucumber.filter.tags}</cucumber.filter.tags>
                         <cucumber.options>${cucumber.options}</cucumber.options>
                     </systemPropertyVariables>
-                    <!-- INCLUIR ARCHIVOS DE TEST -->
                     <includes>
                         <include>**/*Test.java</include>
                         <include>**/*Tests.java</include>
@@ -42,6 +44,7 @@
                 </configuration>
             </plugin>
 
+            <!-- Cucumber Reporting Plugin (UNA SOLA VEZ) -->
             <plugin>
                 <groupId>net.masterthought</groupId>
                 <artifactId>maven-cucumber-reporting</artifactId>
@@ -68,10 +71,342 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Plugin para copiar reportes por entorno (SIMPLIFICADO) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-reports-to-environment-folder</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <!-- Detectar entorno de manera simple desde archivo .env -->
+                                <loadfile property="env.content" srcFile="${project.basedir}/.env" failonerror="false" quiet="true"/>
+                                <condition property="detected.environment" value="dev">
+                                    <or>
+                                        <contains string="${env.content}" substring="ENTORNO=D"/>
+                                        <not><isset property="env.content"/></not>
+                                    </or>
+                                </condition>
+                                <condition property="detected.environment" value="cert">
+                                    <contains string="${env.content}" substring="ENTORNO=C"/>
+                                </condition>
+                                <!-- Por defecto usar dev si no se detecta nada -->
+                                <condition property="detected.environment" value="dev">
+                                    <not><isset property="detected.environment"/></not>
+                                </condition>
+
+                                <!-- Mensaje informativo -->
+                                <echo message="🔍 Entorno detectado: ${detected.environment}"/>
+                                <echo message="📋 Copiando reportes de target/ a reports/${detected.environment}/"/>
+
+                                <!-- Crear directorio de destino -->
+                                <mkdir dir="${project.basedir}/reports/${detected.environment}"/>
+
+                                <!-- Copiar todo el contenido de target/ a reports/{entorno}/ -->
+                                <copy todir="${project.basedir}/reports/${detected.environment}"
+                                      preservelastmodified="true"
+                                      overwrite="true"
+                                      failonerror="false">
+                                    <fileset dir="${project.build.directory}">
+                                        <!-- Incluir los reportes importantes -->
+                                        <include name="cucumber/**"/>
+                                        <include name="cucumber-reports/**"/>
+                                        <include name="cucumber-html-reports/**"/>
+                                        <include name="surefire-reports/**"/>
+                                        <include name="site/**"/>
+                                        <!-- Excluir archivos temporales y compilados -->
+                                        <exclude name="test-classes/**"/>
+                                        <exclude name="classes/**"/>
+                                        <exclude name="maven-status/**"/>
+                                        <exclude name="maven-archiver/**"/>
+                                        <exclude name="*.jar"/>
+                                    </fileset>
+                                </copy>
+
+                                <!-- Crear un archivo de metadatos -->
+                                <tstamp>
+                                    <format property="timestamp" pattern="yyyy-MM-dd HH:mm:ss"/>
+                                </tstamp>
+                                <echo file="${project.basedir}/reports/${detected.environment}/test-metadata.txt">Entorno: ${detected.environment}
+                                    Fecha de ejecución: ${timestamp}
+                                    Proyecto: ${project.name}
+                                    Versión: ${project.version}
+                                    Directorio origen: ${project.build.directory}
+                                    Comando ejecutado: mvn test
+                                    Usuario: ${user.name}
+                                    Sistema operativo: ${os.name}
+                                </echo>
+
+                                <!-- Crear index.html específico del entorno -->
+                                <echo file="${project.basedir}/reports/${detected.environment}/index.html">&lt;!DOCTYPE html&gt;
+                                    &lt;html&gt;
+                                    &lt;head&gt;
+                                    &lt;title&gt;Reportes SIASIS - ${detected.environment.toUpperCase()}&lt;/title&gt;
+                                    &lt;style&gt;
+                                    body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+                                    .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto; }
+                                    h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+                                    .back-link { display: inline-block; margin-bottom: 20px; padding: 10px 15px; background: #95a5a6; color: white; text-decoration: none; border-radius: 5px; }
+                                    .back-link:hover { background: #7f8c8d; }
+                                    .report-section { margin: 20px 0; }
+                                    .report-section h2 { color: #34495e; border-left: 4px solid #3498db; padding-left: 15px; }
+                                    .report-link { display: block; padding: 15px; margin: 10px 0; background: #3498db; color: white; text-decoration: none; border-radius: 5px; transition: background 0.3s; }
+                                    .report-link:hover { background: #2980b9; }
+                                    .metadata { background: #ecf0f1; padding: 15px; border-radius: 5px; margin-top: 20px; }
+                                    .metadata h3 { margin-top: 0; color: #2c3e50; }
+                                    .file-list { background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0; }
+                                    .file-item { margin: 5px 0; }
+                                    &lt;/style&gt;
+                                    &lt;/head&gt;
+                                    &lt;body&gt;
+                                    &lt;div class="container"&gt;
+                                    &lt;a href="../../index.html" class="back-link"&gt;⬅️ Volver al Dashboard Principal&lt;/a&gt;
+
+                                    &lt;h1&gt;📊 Reportes de Testing - Entorno ${detected.environment.toUpperCase()}&lt;/h1&gt;
+
+                                    &lt;div class="report-section"&gt;
+                                    &lt;h2&gt;🥒 Reportes de Cucumber&lt;/h2&gt;
+                                    &lt;a href="cucumber-reports/index.html" class="report-link"&gt;📋 Reporte Principal de Cucumber&lt;/a&gt;
+                                    &lt;a href="cucumber-html-reports/overview-features.html" class="report-link"&gt;📈 Overview de Features&lt;/a&gt;
+                                    &lt;a href="cucumber-html-reports/overview-steps.html" class="report-link"&gt;👣 Overview de Steps&lt;/a&gt;
+                                    &lt;a href="cucumber-html-reports/overview-failures.html" class="report-link"&gt;❌ Overview de Failures&lt;/a&gt;
+                                    &lt;a href="cucumber-html-reports/overview-tags.html" class="report-link"&gt;🏷️ Overview de Tags&lt;/a&gt;
+
+                                    &lt;div class="file-list"&gt;
+                                    &lt;strong&gt;📁 Archivos adicionales disponibles:&lt;/strong&gt;
+                                    &lt;div class="file-item"&gt;• Reportes individuales por feature (report-feature-*.html)&lt;/div&gt;
+                                    &lt;div class="file-item"&gt;• Reportes individuales por tag (report-tag_*.html)&lt;/div&gt;
+                                    &lt;div class="file-item"&gt;• Ver carpeta cucumber-html-reports/ para archivos completos&lt;/div&gt;
+                                    &lt;/div&gt;
+                                    &lt;/div&gt;
+
+                                    &lt;div class="report-section"&gt;
+                                    &lt;h2&gt;🧪 Reportes de Surefire&lt;/h2&gt;
+                                    &lt;a href="surefire-reports/" class="report-link"&gt;📄 Ver todos los reportes XML/TXT&lt;/a&gt;
+                                    &lt;/div&gt;
+
+                                    &lt;div class="report-section"&gt;
+                                    &lt;h2&gt;📦 Datos JSON&lt;/h2&gt;
+                                    &lt;a href="cucumber/cucumber.json" class="report-link"&gt;📝 Archivo JSON de Cucumber&lt;/a&gt;
+                                    &lt;/div&gt;
+
+                                    &lt;div class="metadata"&gt;
+                                    &lt;h3&gt;ℹ️ Información de la Ejecución&lt;/h3&gt;
+                                    &lt;p&gt;&lt;strong&gt;Entorno:&lt;/strong&gt; ${detected.environment}&lt;/p&gt;
+                                    &lt;p&gt;&lt;strong&gt;Fecha:&lt;/strong&gt; ${timestamp}&lt;/p&gt;
+                                    &lt;p&gt;&lt;strong&gt;Proyecto:&lt;/strong&gt; ${project.name} v${project.version}&lt;/p&gt;
+                                    &lt;p&gt;&lt;strong&gt;Usuario:&lt;/strong&gt; ${user.name}&lt;/p&gt;
+                                    &lt;p&gt;&lt;strong&gt;Sistema:&lt;/strong&gt; ${os.name}&lt;/p&gt;
+                                    &lt;/div&gt;
+                                    &lt;/div&gt;
+                                    &lt;/body&gt;
+                                    &lt;/html&gt;</echo>
+
+                                <!-- GENERAR INDEX.HTML PRINCIPAL EN LA RAÍZ -->
+                                <echo file="${project.basedir}/index.html">&lt;!DOCTYPE html&gt;
+                                    &lt;html lang="es"&gt;
+                                    &lt;head&gt;
+                                    &lt;meta charset="UTF-8"&gt;
+                                    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+                                    &lt;title&gt;🚀 SIASIS - Dashboard de Reportes de Testing&lt;/title&gt;
+                                    &lt;style&gt;
+                                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                                    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; overflow-x: hidden; }
+                                    .stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+                                    .star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; animation: twinkle 3s infinite; }
+                                    @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+                                    .container { position: relative; z-index: 10; max-width: 1400px; margin: 0 auto; padding: 20px; min-height: 100vh; }
+                                    .header { text-align: center; color: white; margin-bottom: 40px; animation: slideDown 1s ease-out; }
+                                    @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+                                    .header h1 { font-size: 3.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); background: linear-gradient(45deg, #fff, #f0f8ff, #e6f3ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+                                    .header p { font-size: 1.2rem; opacity: 0.9; margin-bottom: 20px; }
+                                    .environment-detector { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 15px; padding: 20px; margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.2); animation: fadeIn 1.5s ease-out; }
+                                    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+                                    .environment-status { display: flex; align-items: center; justify-content: center; gap: 15px; color: white; font-size: 1.1rem; margin-bottom: 15px; }
+                                    .env-badge { padding: 8px 20px; border-radius: 25px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; animation: pulse 2s infinite; }
+                                    .env-dev { background: linear-gradient(45deg, #4CAF50, #45a049); }
+                                    .env-cert { background: linear-gradient(45deg, #ff9800, #f57c00); }
+                                    .env-unknown { background: linear-gradient(45deg, #757575, #616161); }
+                                    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+                                    .reports-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 40px; }
+                                    .report-card { background: rgba(255,255,255,0.95); border-radius: 20px; padding: 25px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.2); position: relative; overflow: hidden; animation: slideUp 1s ease-out forwards; opacity: 0; }
+                                    .report-card:nth-child(1) { animation-delay: 0.2s; }
+                                    .report-card:nth-child(2) { animation-delay: 0.4s; }
+                                    .report-card:nth-child(3) { animation-delay: 0.6s; }
+                                    .report-card:nth-child(4) { animation-delay: 0.8s; }
+                                    @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+                                    .report-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 15px 45px rgba(0,0,0,0.2); }
+                                    .report-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #667eea, #764ba2); }
+                                    .report-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+                                    .report-icon { font-size: 2.5rem; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 15px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); }
+                                    .report-title { font-size: 1.3rem; font-weight: bold; color: #2c3e50; margin-bottom: 5px; }
+                                    .report-description { color: #7f8c8d; font-size: 0.9rem; }
+                                    .report-links { display: flex; flex-direction: column; gap: 10px; }
+                                    .report-link { display: flex; align-items: center; gap: 10px; padding: 12px 15px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-radius: 10px; text-decoration: none; color: #495057; transition: all 0.3s ease; border: 1px solid #dee2e6; }
+                                    .report-link:hover { background: linear-gradient(135deg, #667eea, #764ba2); color: white; transform: translateX(5px); box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); }
+                                    .link-icon { font-size: 1.2rem; width: 25px; }
+                                    .status-indicator { width: 10px; height: 10px; border-radius: 50%; margin-left: auto; }
+                                    .status-available { background: #4CAF50; }
+                                    .status-unavailable { background: #f44336; }
+                                    .status-checking { background: #ff9800; animation: blink 1s infinite; }
+                                    @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0.3; } }
+                                    .footer { text-align: center; color: rgba(255,255,255,0.8); margin-top: 40px; padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+                                    .refresh-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.3); transition: all 0.3s ease; z-index: 1000; }
+                                    .refresh-btn:hover { transform: scale(1.1) rotate(180deg); box-shadow: 0 6px 25px rgba(0,0,0,0.4); }
+                                    .loading { display: none; text-align: center; color: white; font-size: 1.1rem; margin: 20px 0; }
+                                    .spinner { border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid white; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+                                    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+                                    @media (max-width: 768px) { .header h1 { font-size: 2.5rem; } .reports-grid { grid-template-columns: 1fr; } .container { padding: 15px; } .report-card { padding: 20px; } }
+                                    &lt;/style&gt;
+                                    &lt;/head&gt;
+                                    &lt;body&gt;
+                                    &lt;div class="stars" id="stars"&gt;&lt;/div&gt;
+                                    &lt;div class="container"&gt;
+                                    &lt;header class="header"&gt;
+                                    &lt;h1&gt;🚀 SIASIS Testing Dashboard&lt;/h1&gt;
+                                    &lt;p&gt;Sistema de Control de Asistencia - I.E. 20935 Asunción 8&lt;/p&gt;
+                                    &lt;p&gt;📊 Portal de Reportes de Testing Automatizado&lt;/p&gt;
+                                    &lt;/header&gt;
+                                    &lt;div class="environment-detector"&gt;
+                                    &lt;div class="environment-status"&gt;
+                                    &lt;span&gt;🌍 Entorno Actual:&lt;/span&gt;
+                                    &lt;span class="env-badge env-${detected.environment}"&gt;${detected.environment.toUpperCase()} 🎯&lt;/span&gt;
+                                    &lt;/div&gt;
+                                    &lt;div style="text-align: center; color: white;"&gt;
+                                    &lt;p&gt;⏰ Generado: ${timestamp}&lt;/p&gt;
+                                    &lt;/div&gt;
+                                    &lt;/div&gt;
+                                    &lt;div class="reports-grid"&gt;
+                                    &lt;div class="report-card"&gt;
+                                    &lt;div class="report-header"&gt;
+                                    &lt;div class="report-icon"&gt;🎯&lt;/div&gt;
+                                    &lt;div&gt;
+                                    &lt;div class="report-title"&gt;Entorno Actual&lt;/div&gt;
+                                    &lt;div class="report-description"&gt;Reportes del entorno ${detected.environment.toUpperCase()}&lt;/div&gt;
+                                    &lt;/div&gt;
+                                    &lt;/div&gt;
+                                    &lt;div class="report-links"&gt;
+                                    &lt;a href="reports/${detected.environment}/index.html" class="report-link"&gt;
+                                    &lt;span class="link-icon"&gt;📊&lt;/span&gt;
+                                    &lt;span&gt;Ver Reportes ${detected.environment.toUpperCase()}&lt;/span&gt;
+                                    &lt;span class="status-indicator status-available"&gt;&lt;/span&gt;
+                                    &lt;/a&gt;
+                                    &lt;a href="reports/${detected.environment}/cucumber-reports/index.html" class="report-link"&gt;
+                                    &lt;span class="link-icon"&gt;🥒&lt;/span&gt;
+                                    &lt;span&gt;Cucumber Directo&lt;/span&gt;
+                                    &lt;span class="status-indicator status-available"&gt;&lt;/span&gt;
+                                    &lt;/a&gt;
+                                    &lt;/div&gt;
+                                    &lt;/div&gt;
+                                    &lt;div class="report-card"&gt;
+                                    &lt;div class="report-header"&gt;
+                                    &lt;div class="report-icon"&gt;🌍&lt;/div&gt;
+                                    &lt;div&gt;
+                                    &lt;div class="report-title"&gt;Todos los Entornos&lt;/div&gt;
+                                    &lt;div class="report-description"&gt;Comparar reportes entre entornos&lt;/div&gt;
+                                    &lt;/div&gt;
+                                    &lt;/div&gt;
+                                    &lt;div class="report-links"&gt;
+                                    &lt;a href="reports/dev/index.html" class="report-link"&gt;
+                                    &lt;span class="link-icon"&gt;🛠️&lt;/span&gt;
+                                    &lt;span&gt;Desarrollo (DEV)&lt;/span&gt;
+                                    &lt;span class="status-indicator status-available"&gt;&lt;/span&gt;
+                                    &lt;/a&gt;
+                                    &lt;a href="reports/cert/index.html" class="report-link"&gt;
+                                    &lt;span class="link-icon"&gt;🎯&lt;/span&gt;
+                                    &lt;span&gt;Certificación (CERT)&lt;/span&gt;
+                                    &lt;span class="status-indicator status-available"&gt;&lt;/span&gt;
+                                    &lt;/a&gt;
+                                    &lt;/div&gt;
+                                    &lt;/div&gt;
+                                    &lt;div class="report-card"&gt;
+                                    &lt;div class="report-header"&gt;
+                                    &lt;div class="report-icon"&gt;📁&lt;/div&gt;
+                                    &lt;div&gt;
+                                    &lt;div class="report-title"&gt;Target Original&lt;/div&gt;
+                                    &lt;div class="report-description"&gt;Reportes estándar de Maven&lt;/div&gt;
+                                    &lt;/div&gt;
+                                    &lt;/div&gt;
+                                    &lt;div class="report-links"&gt;
+                                    &lt;a href="target/cucumber-reports/index.html" class="report-link"&gt;
+                                    &lt;span class="link-icon"&gt;🥒&lt;/span&gt;
+                                    &lt;span&gt;Cucumber Target&lt;/span&gt;
+                                    &lt;span class="status-indicator status-available"&gt;&lt;/span&gt;
+                                    &lt;/a&gt;
+                                    &lt;a href="target/surefire-reports/" class="report-link"&gt;
+                                    &lt;span class="link-icon"&gt;🧪&lt;/span&gt;
+                                    &lt;span&gt;Surefire Target&lt;/span&gt;
+                                    &lt;span class="status-indicator status-available"&gt;&lt;/span&gt;
+                                    &lt;/a&gt;
+                                    &lt;/div&gt;
+                                    &lt;/div&gt;
+                                    &lt;div class="report-card"&gt;
+                                    &lt;div class="report-header"&gt;
+                                    &lt;div class="report-icon"&gt;⚙️&lt;/div&gt;
+                                    &lt;div&gt;
+                                    &lt;div class="report-title"&gt;Información&lt;/div&gt;
+                                    &lt;div class="report-description"&gt;Metadatos y utilidades&lt;/div&gt;
+                                    &lt;/div&gt;
+                                    &lt;/div&gt;
+                                    &lt;div class="report-links"&gt;
+                                    &lt;a href="reports/${detected.environment}/test-metadata.txt" class="report-link"&gt;
+                                    &lt;span class="link-icon"&gt;ℹ️&lt;/span&gt;
+                                    &lt;span&gt;Metadatos de Ejecución&lt;/span&gt;
+                                    &lt;span class="status-indicator status-available"&gt;&lt;/span&gt;
+                                    &lt;/a&gt;
+                                    &lt;a href="reports/" class="report-link"&gt;
+                                    &lt;span class="link-icon"&gt;📂&lt;/span&gt;
+                                    &lt;span&gt;Explorar Carpeta Reports&lt;/span&gt;
+                                    &lt;span class="status-indicator status-available"&gt;&lt;/span&gt;
+                                    &lt;/a&gt;
+                                    &lt;/div&gt;
+                                    &lt;/div&gt;
+                                    &lt;/div&gt;
+                                    &lt;footer class="footer"&gt;
+                                    &lt;p&gt;🏫 I.E. 20935 Asunción 8 - Imperial, Cañete&lt;/p&gt;
+                                    &lt;p&gt;🔧 Sistema de Testing Automatizado con Selenium + Cucumber&lt;/p&gt;
+                                    &lt;p&gt;📊 Dashboard generado automáticamente el ${timestamp}&lt;/p&gt;
+                                    &lt;/footer&gt;
+                                    &lt;/div&gt;
+                                    &lt;script&gt;
+                                    // Crear estrellas animadas
+                                    function createStars() {
+                                    const starsContainer = document.getElementById('stars');
+                                    for (let i = 0; i &lt; 100; i++) {
+                                    const star = document.createElement('div');
+                                    star.className = 'star';
+                                    star.style.left = Math.random() * 100 + '%';
+                                    star.style.top = Math.random() * 100 + '%';
+                                    star.style.animationDelay = Math.random() * 3 + 's';
+                                    starsContainer.appendChild(star);
+                                    }
+                                    }
+                                    createStars();
+                                    &lt;/script&gt;
+                                    &lt;/body&gt;
+                                    &lt;/html&gt;</echo>
+
+                                <echo message="✅ Reportes copiados exitosamente a reports/${detected.environment}/"/>
+                                <echo message="🌐 Index principal generado en: index.html"/>
+                                <echo message="🎯 Index de entorno generado en: reports/${detected.environment}/index.html"/>
+                                <echo message="🚀 Abre index.html para acceder al dashboard principal"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
     <dependencies>
+        <!-- Tus dependencias existentes (sin cambios) -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
@@ -149,5 +484,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 </project>
