@@ -4,10 +4,10 @@
   Tags ejecutados: @Login
   Browser usado: chrome
   Ejecución paralela: false
-  Nombre del reporte: cert_login_1750920505
+  Nombre del reporte: cert_login_1750980482
   
   Repository: GeoCoderDev/continuous-testing-selenium-SIASIS-SIU01-WEB
-  Run ID: 15894959985
+  Run ID: 15914559771
   Actor: GeoCoderDev
   
   Exit Code: 0
