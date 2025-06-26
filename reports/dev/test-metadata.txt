@@ -1,13 +1,13 @@
 # SIASIS Test Execution Metadata (GitHub Actions)
 
   Entorno: dev
-  Tags ejecutados: @Login
+  Tags ejecutados: @all
   Browser usado: chrome
   Ejecución paralela: false
-  Nombre del reporte: dev_login_1750920538
+  Nombre del reporte: dev_all_1750920851
   
   Repository: GeoCoderDev/continuous-testing-selenium-SIASIS-SIU01-WEB
-  Run ID: 15894968562
+  Run ID: 15895055964
   Actor: GeoCoderDev
   
   Exit Code: 0
