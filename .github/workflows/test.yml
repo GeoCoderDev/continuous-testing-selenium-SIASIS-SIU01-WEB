@@ -17,16 +17,19 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+      
       - name: ☕ Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
           java-version: "17"
           cache: maven
+      
       - name: 🔧 Setup Chrome Browser
         uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: stable
+      
       - name: 📋 Parse Input Parameters
         id: params
         run: |
@@ -36,10 +39,14 @@ jobs:
           REPORT_NAME="${{ github.event.client_payload.report_name }}"
           BROWSER="${{ github.event.client_payload.browser }}"
           PARALLEL="${{ github.event.client_payload.parallel }}"
+          NOTIFICATION_EMAIL="${{ github.event.client_payload.notification_email }}"
+          
+          # Defaults
           ENVIRONMENT=${ENVIRONMENT:-"D"}
           REPORT_NAME=${REPORT_NAME:-"$(date +%Y%m%d_%H%M%S)_${ENVIRONMENT}"}
           BROWSER=${BROWSER:-"chrome"}
           PARALLEL=${PARALLEL:-"false"}
+          
           if [ "$ENVIRONMENT" = "D" ]; then
             ENV_NAME="dev"
             ENV_DISPLAY="🛠️ DESARROLLO"
@@ -51,10 +58,16 @@ jobs:
             ENV_DISPLAY="🛠️ DESARROLLO (default)"
             ENVIRONMENT="D"
           fi
+          
           if [ -z "$TAGS" ]; then
             echo "ℹ️ No tags provided, running all tests..."
-            TAGS=""
+            TAGS="@all"
           fi
+          
+          # Generate execution ID and timestamp
+          EXECUTION_ID="SIASIS_$(date +%Y%m%d_%H%M%S)_${ENVIRONMENT}"
+          EXECUTION_TIMESTAMP="$(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          
           echo "tags=$TAGS" >> $GITHUB_OUTPUT
           echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
           echo "env_name=$ENV_NAME" >> $GITHUB_OUTPUT
@@ -62,6 +75,98 @@ jobs:
           echo "report_name=$REPORT_NAME" >> $GITHUB_OUTPUT
           echo "browser=$BROWSER" >> $GITHUB_OUTPUT
           echo "parallel=$PARALLEL" >> $GITHUB_OUTPUT
+          echo "notification_email=$NOTIFICATION_EMAIL" >> $GITHUB_OUTPUT
+          echo "execution_id=$EXECUTION_ID" >> $GITHUB_OUTPUT
+          echo "execution_timestamp=$EXECUTION_TIMESTAMP" >> $GITHUB_OUTPUT
+          echo "job_url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_OUTPUT
+      
+      - name: 📧 Send Test Execution Start Notification
+        if: steps.params.outputs.notification_email != ''
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.TESTING_INFORMATOR_EMAIL }}
+          password: ${{ secrets.TESTING_INFORMATOR_PASSWORD_APPLICATION_EMAIL }}
+          subject: "🚀 [SIASIS] Ejecución de Tests Iniciada - ${{ steps.params.outputs.env_display }}"
+          to: ${{ steps.params.outputs.notification_email }}
+          from: SIASIS Test Automation <${{ secrets.TESTING_INFORMATOR_EMAIL }}>
+          html_body: |
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <style>
+                    body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background-color: #f5f5f5; }
+                    .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; }
+                    .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+                    .header h1 { margin: 0; font-size: 24px; }
+                    .content { padding: 30px; }
+                    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+                    .info-item { background: #f8f9ff; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea; }
+                    .info-label { font-weight: bold; color: #667eea; font-size: 12px; text-transform: uppercase; margin-bottom: 5px; }
+                    .info-value { color: #333; font-size: 14px; }
+                    .status-badge { display: inline-block; padding: 8px 16px; background: #28a745; color: white; border-radius: 20px; font-size: 12px; font-weight: bold; }
+                    .footer { background: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #666; }
+                    .button { display: inline-block; padding: 12px 24px; background: #667eea; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 10px 5px; }
+                    .grid-full { grid-column: 1 / -1; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>🚀 SIASIS Test Automation</h1>
+                        <div class="status-badge">✅ EJECUCIÓN INICIADA</div>
+                    </div>
+                    
+                    <div class="content">
+                        <h2>📋 Detalles de la Ejecución</h2>
+                        <p>Se ha iniciado una nueva ejecución de tests automatizados para el Sistema de Asistencia SIASIS.</p>
+                        
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">🌍 Entorno</div>
+                                <div class="info-value">${{ steps.params.outputs.env_display }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">🏷️ Tags/Scenarios</div>
+                                <div class="info-value">${{ steps.params.outputs.tags }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">🌐 Navegador</div>
+                                <div class="info-value">${{ steps.params.outputs.browser }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">⚡ Ejecución Paralela</div>
+                                <div class="info-value">${{ steps.params.outputs.parallel }}</div>
+                            </div>
+                            <div class="info-item grid-full">
+                                <div class="info-label">🆔 ID de Ejecución</div>
+                                <div class="info-value">${{ steps.params.outputs.execution_id }}</div>
+                            </div>
+                            <div class="info-item grid-full">
+                                <div class="info-label">🕐 Hora de Inicio</div>
+                                <div class="info-value">${{ steps.params.outputs.execution_timestamp }}</div>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; margin: 30px 0;">
+                            <a href="${{ steps.params.outputs.job_url }}" class="button">👀 Ver Ejecución en Tiempo Real</a>
+                        </div>
+                        
+                        <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-left: 4px solid #2196f3;">
+                            <strong>ℹ️ Información:</strong> Recibirás otra notificación cuando la ejecución termine con los resultados finales y enlaces a los reportes.
+                        </div>
+                    </div>
+                    
+                    <div class="footer">
+                        <p>🤖 Generado automáticamente por SIASIS Test Automation</p>
+                        <p>📋 GitHub Actions Run ID: ${{ github.run_id }} | 👤 Ejecutado por: ${{ github.actor }}</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+      
       - name: 🔐 Setup Environment Variables
         run: |
           echo "ENTORNO=${{ steps.params.outputs.environment }}" >> $GITHUB_ENV
@@ -98,6 +203,7 @@ jobs:
             echo "RESPONSABLE_USERNAME_CERT=${{ secrets.RESPONSABLE_USERNAME_CERT }}" >> $GITHUB_ENV
             echo "RESPONSABLE_PASSWORD_CERT=${{ secrets.RESPONSABLE_PASSWORD_CERT }}" >> $GITHUB_ENV
           fi
+      
       - name: 🧪 Execute Tests
         id: tests
         run: |
@@ -105,7 +211,7 @@ jobs:
           ENTORNO="${{ steps.params.outputs.environment }}"
           EOF
           set +e
-          if [ -z "${{ steps.params.outputs.tags }}" ]; then
+          if [ -z "${{ steps.params.outputs.tags }}" ] || [ "${{ steps.params.outputs.tags }}" = "@all" ]; then
             echo "▶️ No tags provided, running all tests..."
             mvn clean verify -B
           else
@@ -115,11 +221,13 @@ jobs:
           TEST_EXIT_CODE=$?
           set -e
           echo "test_exit_code=$TEST_EXIT_CODE" >> $GITHUB_OUTPUT
+          echo "execution_end_time=$(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_OUTPUT
           if [ -d "reports/${{ steps.params.outputs.env_name }}" ]; then
             echo "reports_generated=true" >> $GITHUB_OUTPUT
           else
             echo "reports_generated=false" >> $GITHUB_OUTPUT
           fi
+      
       - name: 🔒 Create Secure Metadata
         if: always()
         run: |
@@ -142,6 +250,7 @@ jobs:
             
             🔐 Created by SIASIS Test Automation
           EOF
+      
       - name: 📊 Upload Test Reports (Backup)
         if: always()
         uses: actions/upload-artifact@v4
@@ -153,6 +262,7 @@ jobs:
             reports/
             index.html
           retention-days: 30
+      
       - name: 📈 Publish Test Results
         if: always()
         uses: dorny/test-reporter@v1
@@ -161,6 +271,7 @@ jobs:
           path: target/surefire-reports/*.xml
           reporter: java-junit
           fail-on-error: false
+      
       - name: 🚀 Commit and Push Reports to test-results Branch
         if: steps.tests.outputs.reports_generated == 'true'
         run: |
@@ -222,6 +333,106 @@ jobs:
             echo "✅ Reportes pusheados exitosamente a test-results."
             echo "🌐 GitHub Pages actualizado en minutos."
           fi
+      
+      - name: 📧 Send Test Execution Completion Notification
+        if: always() && steps.params.outputs.notification_email != ''
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.TESTING_INFORMATOR_EMAIL }}
+          password: ${{ secrets.TESTING_INFORMATOR_PASSWORD_APPLICATION_EMAIL }}
+          subject: "${{ steps.tests.outputs.test_exit_code == '0' && '✅ [SIASIS] Tests Ejecutados EXITOSAMENTE' || '❌ [SIASIS] Tests FALLARON' }} - ${{ steps.params.outputs.env_display }}"
+          to: ${{ steps.params.outputs.notification_email }}
+          from: SIASIS Test Automation <${{ secrets.TESTING_INFORMATOR_EMAIL }}>
+          html_body: |
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <style>
+                    body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background-color: #f5f5f5; }
+                    .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; }
+                    .header { background: linear-gradient(135deg, ${{ steps.tests.outputs.test_exit_code == '0' && '#28a745, #20c997' || '#dc3545, #fd7e14' }}); color: white; padding: 30px; text-align: center; }
+                    .header h1 { margin: 0; font-size: 24px; }
+                    .content { padding: 30px; }
+                    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+                    .info-item { background: #f8f9ff; padding: 15px; border-radius: 8px; border-left: 4px solid ${{ steps.tests.outputs.test_exit_code == '0' && '#28a745' || '#dc3545' }}; }
+                    .info-label { font-weight: bold; color: ${{ steps.tests.outputs.test_exit_code == '0' && '#28a745' || '#dc3545' }}; font-size: 12px; text-transform: uppercase; margin-bottom: 5px; }
+                    .info-value { color: #333; font-size: 14px; }
+                    .status-badge { display: inline-block; padding: 8px 16px; background: ${{ steps.tests.outputs.test_exit_code == '0' && '#28a745' || '#dc3545' }}; color: white; border-radius: 20px; font-size: 12px; font-weight: bold; }
+                    .footer { background: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #666; }
+                    .button { display: inline-block; padding: 12px 24px; background: ${{ steps.tests.outputs.test_exit_code == '0' && '#28a745' || '#dc3545' }}; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 10px 5px; }
+                    .grid-full { grid-column: 1 / -1; }
+                    .reports-section { background: #e8f5e8; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #28a745; }
+                    .warning-section { background: #fff3cd; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ffc107; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>${{ steps.tests.outputs.test_exit_code == '0' && '✅' || '❌' }} SIASIS Test Automation</h1>
+                        <div class="status-badge">${{ steps.tests.outputs.test_exit_code == '0' && '✅ TESTS EXITOSOS' || '❌ TESTS FALLARON' }}</div>
+                    </div>
+                    
+                    <div class="content">
+                        <h2>📋 Resumen de la Ejecución</h2>
+                        <p>${{ steps.tests.outputs.test_exit_code == '0' && '¡Excelente! Todos los tests se ejecutaron correctamente sin errores.' || 'Se detectaron errores durante la ejecución de los tests. Revisa los reportes para más detalles.' }}</p>
+                        
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">🌍 Entorno</div>
+                                <div class="info-value">${{ steps.params.outputs.env_display }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">🏷️ Tags/Scenarios</div>
+                                <div class="info-value">${{ steps.params.outputs.tags }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">🌐 Navegador</div>
+                                <div class="info-value">${{ steps.params.outputs.browser }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">⚡ Ejecución Paralela</div>
+                                <div class="info-value">${{ steps.params.outputs.parallel }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">🕐 Hora de Inicio</div>
+                                <div class="info-value">${{ steps.params.outputs.execution_timestamp }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">🏁 Hora de Finalización</div>
+                                <div class="info-value">${{ steps.tests.outputs.execution_end_time }}</div>
+                            </div>
+                            <div class="info-item grid-full">
+                                <div class="info-label">🆔 ID de Ejecución</div>
+                                <div class="info-value">${{ steps.params.outputs.execution_id }}</div>
+                            </div>
+                        </div>
+                        
+                        ${{ steps.tests.outputs.reports_generated == 'true' && format('<div class="reports-section"><h3>📊 Reportes Disponibles</h3><p>Los reportes de testing han sido generados y estarán disponibles en aproximadamente <strong>2-3 minutos</strong> en GitHub Pages:</p><div style="text-align: center;"><a href="https://geocoderdev.github.io/continuous-testing-selenium-SIASIS-SIU01-WEB/" class="button">🌐 Ver Dashboard Principal</a><a href="https://geocoderdev.github.io/continuous-testing-selenium-SIASIS-SIU01-WEB/reports/{0}/cucumber-reports/" class="button">🥒 Reportes Cucumber</a><a href="https://geocoderdev.github.io/continuous-testing-selenium-SIASIS-SIU01-WEB/reports/{0}/surefire-reports/" class="button">🧪 Reportes Surefire</a></div><p><strong>⏰ Nota:</strong> Si los enlaces no funcionan inmediatamente, espera 2-3 minutos para que GitHub Pages se actualice.</p></div>', steps.params.outputs.env_name) || '<div class="warning-section"><h3>⚠️ Reportes No Generados</h3><p>No se pudieron generar reportes para esta ejecución. Revisa la ejecución en GitHub Actions para más detalles.</p></div>' }}
+                        
+                        <div style="text-align: center; margin: 30px 0;">
+                            <a href="${{ steps.params.outputs.job_url }}" class="button">👀 Ver Detalles de la Ejecución</a>
+                        </div>
+                        
+                        <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-left: 4px solid #2196f3;">
+                            <strong>ℹ️ Próximos pasos:</strong>
+                            <ul style="margin: 10px 0; padding-left: 20px;">
+                                ${{ steps.tests.outputs.test_exit_code == '0' && '<li>✅ Revisa los reportes para ver los detalles de los tests exitosos</li><li>📊 Analiza las métricas de rendimiento en los reportes</li><li>🔄 Los tests están listos para el siguiente ciclo</li>' || '<li>❌ Revisa los reportes para identificar los tests que fallaron</li><li>🔍 Analiza los logs de error en GitHub Actions</li><li>🛠️ Corrige los issues identificados antes del próximo ciclo</li>' }}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="footer">
+                        <p>🤖 Generado automáticamente por SIASIS Test Automation</p>
+                        <p>📋 GitHub Actions Run ID: ${{ github.run_id }} | 👤 Ejecutado por: ${{ github.actor }}</p>
+                        <p>🔗 Repositorio: <a href="https://github.com/${{ github.repository }}">${{ github.repository }}</a></p>
+                    </div>
+                </div>
+            </body>
+            </html>
+      
       - name: 📋 Test Summary
         if: always()
         run: |
@@ -232,6 +443,7 @@ jobs:
           echo "| 🏷️ Tags | \`${{ steps.params.outputs.tags }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| 📝 Nombre Reporte | ${{ steps.params.outputs.report_name }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 🌐 Browser | ${{ steps.params.outputs.browser }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📧 Email Notificación | ${{ steps.params.outputs.notification_email }} |" >> $GITHUB_STEP_SUMMARY
           if [ "${{ steps.tests.outputs.test_exit_code }}" = "0" ]; then
             echo "### ✅ Resultado: ÉXITO" >> $GITHUB_STEP_SUMMARY
           else
@@ -239,11 +451,11 @@ jobs:
           fi
           if [ "${{ steps.tests.outputs.reports_generated }}" = "true" ]; then
             echo "### 📊 Reportes Generados" >> $GITHUB_STEP_SUMMARY
-            echo "- 🌐 [GitHub Pages Dashboard](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/)" >> $GITHUB_STEP_SUMMARY
-            echo "- 🥒 [Cucumber Reports](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ steps.params.outputs.env_name }}/cucumber-reports/)" >> $GITHUB_STEP_SUMMARY
-            echo "- 🧪 [Surefire Reports](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ steps.params.outputs.env_name }}/surefire-reports/)" >> $GITHUB_STEP_SUMMARY
+            echo "- 🌐 [GitHub Pages Dashboard](https://geocoderdev.github.io/continuous-testing-selenium-SIASIS-SIU01-WEB/)" >> $GITHUB_STEP_SUMMARY
+            echo "- 🥒 [Cucumber Reports](https://geocoderdev.github.io/continuous-testing-selenium-SIASIS-SIU01-WEB/reports/${{ steps.params.outputs.env_name }}/cucumber-reports/)" >> $GITHUB_STEP_SUMMARY
+            echo "- 🧪 [Surefire Reports](https://geocoderdev.github.io/continuous-testing-selenium-SIASIS-SIU01-WEB/reports/${{ steps.params.outputs.env_name }}/surefire-reports/)" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "🚀 Reportes actualizados en \`test-results\` y disponibles en GitHub Pages en minutos." >> $GITHUB_STEP_SUMMARY
+            echo "🚀 Reportes actualizados en \`test-results\` y disponibles en GitHub Pages en 2-3 minutos." >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ No se generaron reportes para esta ejecución" >> $GITHUB_STEP_SUMMARY
           fi
