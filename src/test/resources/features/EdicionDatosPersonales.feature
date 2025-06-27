@@ -2,7 +2,7 @@ Feature: Edicion de Datos Personales por Rol
   Background:
     Given Estoy en la página de login
 
-  @EdicionDatosPersonales @Directivo
+  @SIASIS-TC-2 @EdicionDatosPersonales @Directivo
   Scenario: Editar perfil con el rol Directivo
     Given Selecciono el rol DIRECTIVO
     And Ingreso mi nombre de usuario y contraseña

@@ -6,7 +6,7 @@ Feature: Login al sistema SIASIS
   Background:
     Given Estoy en la página de login
 
-  @Login @SmokeTest
+  @SIASIS-TC-1 @Login @SmokeTest
   Scenario Outline: Ingreso de login a SIASIS con el rol <rol>
     Given Selecciono el rol <rol>
     And Ingreso mi nombre de usuario y contraseña
