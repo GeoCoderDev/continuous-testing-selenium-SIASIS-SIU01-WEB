@@ -6,38 +6,38 @@ Feature: Inicio de Sesión en el sistema SIASIS
   Background:
     Given Estoy en la página de login
 
-  @happy @login @auth @regresion @smoke @SIU01 @API01 @API02 @RDP02 @RDP03 @todos-los-roles
+  @SIASIS-TC-1 @happy @login @auth @regresion @smoke @SIU01 @API01 @API02 @RDP02 @RDP03 @todos-los-roles
   Scenario Outline: Ingreso de login a SIASIS con el rol <rol>
     Given Selecciono el rol <rol>
     And Ingreso mi nombre de usuario y contraseña
     Then Accedo al sistema como <rol>
 
-    @directivo
+    @SIASIS-TC-3 @directivo
     Examples:
       | rol       |
       | DIRECTIVO |
 
-    @profesor-primaria
+    @SIASIS-TC-4 @profesor-primaria
     Examples:
       | rol               |
       | PROFESOR_PRIMARIA |
 
-    @auxiliar
+    @SIASIS-TC-5 @auxiliar
     Examples:
       | rol      |
       | AUXILIAR |
 
-    @profesor-secundaria
+    @SIASIS-TC-6 @profesor-secundaria
     Examples:
       | rol                 |
       | PROFESOR_SECUNDARIA |
 
-    @tutor
+    @SIASIS-TC-7 @tutor
     Examples:
       | rol   |
       | TUTOR |
 
-    @personal-administrativo
+    @SIASIS-TC-8 @personal-administrativo
     Examples:
       | rol                     |
       | PERSONAL_ADMINISTRATIVO |
