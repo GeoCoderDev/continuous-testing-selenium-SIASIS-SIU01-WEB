@@ -41,17 +41,17 @@ Feature: Inicio de Sesión en el sistema SIASIS
       | rol                 |
       | PROFESOR_SECUNDARIA |
 
-    @login @tutor
+    @tutor
     Examples:
       | rol   |
       | TUTOR |
 
-    @login @tutor
+    @tutor
     Examples:
       | rol   |
       | TUTOR |
 
-    @login @personal-administrativo
+    @personal-administrativo
     Examples:
       | rol                     |
       | PERSONAL_ADMINISTRATIVO |
