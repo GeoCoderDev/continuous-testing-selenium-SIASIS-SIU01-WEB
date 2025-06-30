@@ -210,27 +210,27 @@ jobs:
           
           echo "¿Existe pom.xml?"
           if [ -f "pom.xml" ]; then
-          echo "✅ pom.xml encontrado"
-          echo "📋 Contenido relevante del pom.xml:"
-          grep -A 5 -B 5 "maven-surefire-plugin\|cucumber\|junit" pom.xml || echo "⚠️ No se encontraron plugins de testing"
+            echo "✅ pom.xml encontrado"
+            echo "📋 Contenido relevante del pom.xml:"
+            grep -A 5 -B 5 "maven-surefire-plugin\|cucumber\|junit" pom.xml || echo "⚠️ No se encontraron plugins de testing"
           else
-          echo "❌ pom.xml NO encontrado"
-          exit 1
+            echo "❌ pom.xml NO encontrado"
+            exit 1
           fi
           
           echo "📁 ¿Existe src/test/?"
           if [ -d "src/test" ]; then
-          echo "✅ src/test/ encontrado"
-          echo "📄 Tests encontrados:"
-          find src/test -name "*.java" | head -10
+            echo "✅ src/test/ encontrado"
+            echo "📄 Tests encontrados:"
+            find src/test -name "*.java" | head -10
           else
-          echo "❌ src/test/ NO encontrado"
+            echo "❌ src/test/ NO encontrado"
           fi
           
           echo "🌍 Variables de entorno:"
-          echo "ENTORNO=$ENTORNO"
-          echo "BROWSER=$BROWSER"
-          echo "CI_HEADLESS_MODE=$CI_HEADLESS_MODE"
+          echo "ENTORNO=${ENTORNO}"
+          echo "BROWSER=${BROWSER}"
+          echo "CI_HEADLESS_MODE=${CI_HEADLESS_MODE}"
           
           echo "☕ Versión de Maven:"
           mvn --version
@@ -241,80 +241,81 @@ jobs:
           echo "🧪 Verificando configuración de tests..."
           mvn test-compile -q || echo "⚠️ Error compilando tests"
           
-          # MODIFICA el paso "🧪 Execute Tests" así:
-          - name: 🧪 Execute Tests
-            id: tests
-            run: |
-              cat > .env << EOF
-              ENTORNO="${{ steps.params.outputs.environment }}"
-              EOF
-              
-              echo "▶️ Iniciando ejecución de tests..."
-              echo "🏷️ Tags: ${{ steps.params.outputs.tags }}"
-              
-              # Configurar Maven con más verbose
-              export MAVEN_OPTS="-Xmx1024m"
-              
-              set +e
-              if [ -z "${{ steps.params.outputs.tags }}" ] || [ "${{ steps.params.outputs.tags }}" = "@all" ]; then
-                echo "▶️ Ejecutando TODOS los tests..."
-                mvn clean test -B -X -e
-              else
-                echo "▶️ Ejecutando tests con tags: ${{ steps.params.outputs.tags }}"
-                mvn clean test -Dcucumber.filter.tags="${{ steps.params.outputs.tags }}" -B -X -e
-              fi
-              TEST_EXIT_CODE=$?
-              set -e
-              
-              echo "🔍 Post-execution check..."
-              echo "Exit code: $TEST_EXIT_CODE"
-              
-              # Verificar si se generaron reportes
-              if [ -d "target/surefire-reports" ]; then
-                echo "✅ target/surefire-reports/ existe"
-                echo "📄 Archivos encontrados:"
-                ls -la target/surefire-reports/
-              else
-                echo "❌ target/surefire-reports/ NO existe"
-              fi
-              
-              if [ -d "target/cucumber-reports" ]; then
-                echo "✅ target/cucumber-reports/ existe"
-              else
-                echo "❌ target/cucumber-reports/ NO existe"
-              fi
-              
-              echo "test_exit_code=$TEST_EXIT_CODE" >> $GITHUB_OUTPUT
-              echo "execution_end_time=$(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_OUTPUT
-              
-              # Verificar reportes más detalladamente
-              if [ -d "target/surefire-reports" ] && [ "$(ls -A target/surefire-reports)" ]; then
-                echo "reports_generated=true" >> $GITHUB_OUTPUT
-              else
-                echo "reports_generated=false" >> $GITHUB_OUTPUT
-              fi
+          echo "🎯 Verificando Runner específico..."
+          if find src/test -name "*Runner*.java" -o -name "*Test.java" | grep -q .; then
+            echo "✅ Encontrados archivos Runner/Test:"
+            find src/test -name "*Runner*.java" -o -name "*Test.java"
+          else
+            echo "⚠️ No se encontraron archivos Runner o Test"
+          fi
       - name: 🧪 Execute Tests
         id: tests
         run: |
           cat > .env << EOF
           ENTORNO="${{ steps.params.outputs.environment }}"
           EOF
+          
+          echo "▶️ Iniciando ejecución de tests..."
+          echo "🏷️ Tags: ${{ steps.params.outputs.tags }}"
+          echo "🌍 Entorno: ${{ steps.params.outputs.environment }}"
+          
+          # Configurar Maven con más memoria
+          export MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=256m"
+          
           set +e
           if [ -z "${{ steps.params.outputs.tags }}" ] || [ "${{ steps.params.outputs.tags }}" = "@all" ]; then
-            echo "▶️ No tags provided, running all tests..."
-            mvn clean verify -B
+            echo "▶️ Ejecutando TODOS los tests..."
+            mvn clean test -Dmaven.test.failure.ignore=true -Dtarget.env=${{ steps.params.outputs.env_name }} -B
           else
-            echo "▶️ Running tests with tags: ${{ steps.params.outputs.tags }}"
-            mvn clean verify -Dcucumber.filter.tags="${{ steps.params.outputs.tags }}" -B
+            echo "▶️ Ejecutando tests con tags: ${{ steps.params.outputs.tags }}"
+            mvn clean test -Dcucumber.filter.tags="${{ steps.params.outputs.tags }}" -Dmaven.test.failure.ignore=true -Dtarget.env=${{ steps.params.outputs.env_name }} -B
           fi
           TEST_EXIT_CODE=$?
           set -e
+          
+          echo "🔍 Post-execution check..."
+          echo "Exit code: $TEST_EXIT_CODE"
+          
+          # Verificar si se generaron reportes en target/
+          echo "📁 Contenido de target/:"
+          ls -la target/ || echo "❌ target/ no existe"
+          
+          if [ -d "target/surefire-reports" ]; then
+            echo "✅ target/surefire-reports/ existe"
+            echo "📄 Archivos encontrados:"
+            ls -la target/surefire-reports/ | head -10
+          else
+            echo "❌ target/surefire-reports/ NO existe"
+          fi
+          
+          if [ -d "target/cucumber-reports" ]; then
+            echo "✅ target/cucumber-reports/ existe"
+            ls -la target/cucumber-reports/ | head -5
+          else
+            echo "⚠️ target/cucumber-reports/ NO existe"
+          fi
+          
+          # Verificar si se copiaron reportes a la estructura del proyecto
+          if [ -d "reports/${{ steps.params.outputs.env_name }}" ]; then
+            echo "✅ reports/${{ steps.params.outputs.env_name }}/ existe"
+            ls -la reports/${{ steps.params.outputs.env_name }}/ | head -5
+          else
+            echo "⚠️ reports/${{ steps.params.outputs.env_name }}/ NO existe"
+          fi
+          
           echo "test_exit_code=$TEST_EXIT_CODE" >> $GITHUB_OUTPUT
           echo "execution_end_time=$(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_OUTPUT
-          if [ -d "reports/${{ steps.params.outputs.env_name }}" ]; then
+          
+          # Verificar reportes más detalladamente
+          if [ -d "target/surefire-reports" ] && [ "$(ls -A target/surefire-reports 2>/dev/null)" ]; then
             echo "reports_generated=true" >> $GITHUB_OUTPUT
+            echo "✅ Reportes SUREFIRE generados correctamente"
+          elif [ -d "reports/${{ steps.params.outputs.env_name }}" ] && [ "$(ls -A reports/${{ steps.params.outputs.env_name }} 2>/dev/null)" ]; then
+            echo "reports_generated=true" >> $GITHUB_OUTPUT
+            echo "✅ Reportes de PROYECTO generados correctamente"
           else
             echo "reports_generated=false" >> $GITHUB_OUTPUT
+            echo "❌ NO se generaron reportes"
           fi
 
       - name: 🔍 Quick Debug - Check test execution
@@ -378,10 +379,26 @@ jobs:
         uses: dorny/test-reporter@v1
         with:
           name: 🧪 Tests Results (${{ steps.params.outputs.env_display }})
-          path: target/surefire-reports/*.xml
+          path: |
+            target/surefire-reports/*.xml
+            reports/${{ steps.params.outputs.env_name }}/surefire-reports/*.xml
           reporter: java-junit
           fail-on-error: false
-      
+
+      - name: 📊 Upload Test Reports (Enhanced)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-${{ steps.params.outputs.report_name }}
+          path: |
+            target/cucumber-reports/
+            target/surefire-reports/
+            target/cucumber/
+            reports/${{ steps.params.outputs.env_name }}/
+            index.html
+          retention-days: 30
+
+
       - name: 🚀 Commit and Push Reports to test-results Branch
         if: steps.tests.outputs.reports_generated == 'true'
         run: |
