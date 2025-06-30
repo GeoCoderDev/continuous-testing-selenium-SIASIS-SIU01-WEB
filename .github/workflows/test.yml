@@ -203,7 +203,96 @@ jobs:
             echo "RESPONSABLE_USERNAME_CERT=${{ secrets.RESPONSABLE_USERNAME_CERT }}" >> $GITHUB_ENV
             echo "RESPONSABLE_PASSWORD_CERT=${{ secrets.RESPONSABLE_PASSWORD_CERT }}" >> $GITHUB_ENV
           fi
-      
+      - name: 🔍 Pre-Test Debug and Validation
+        run: |
+          echo "=== 🔍 DEBUGGING PRE-TESTS ==="
+          echo "📁 Verificando estructura del proyecto..."
+          
+          echo "¿Existe pom.xml?"
+          if [ -f "pom.xml" ]; then
+          echo "✅ pom.xml encontrado"
+          echo "📋 Contenido relevante del pom.xml:"
+          grep -A 5 -B 5 "maven-surefire-plugin\|cucumber\|junit" pom.xml || echo "⚠️ No se encontraron plugins de testing"
+          else
+          echo "❌ pom.xml NO encontrado"
+          exit 1
+          fi
+          
+          echo "📁 ¿Existe src/test/?"
+          if [ -d "src/test" ]; then
+          echo "✅ src/test/ encontrado"
+          echo "📄 Tests encontrados:"
+          find src/test -name "*.java" | head -10
+          else
+          echo "❌ src/test/ NO encontrado"
+          fi
+          
+          echo "🌍 Variables de entorno:"
+          echo "ENTORNO=$ENTORNO"
+          echo "BROWSER=$BROWSER"
+          echo "CI_HEADLESS_MODE=$CI_HEADLESS_MODE"
+          
+          echo "☕ Versión de Maven:"
+          mvn --version
+          
+          echo "📦 Validando dependencias..."
+          mvn dependency:resolve -q || echo "⚠️ Error resolviendo dependencias"
+          
+          echo "🧪 Verificando configuración de tests..."
+          mvn test-compile -q || echo "⚠️ Error compilando tests"
+          
+          # MODIFICA el paso "🧪 Execute Tests" así:
+          - name: 🧪 Execute Tests
+            id: tests
+            run: |
+              cat > .env << EOF
+              ENTORNO="${{ steps.params.outputs.environment }}"
+              EOF
+              
+              echo "▶️ Iniciando ejecución de tests..."
+              echo "🏷️ Tags: ${{ steps.params.outputs.tags }}"
+              
+              # Configurar Maven con más verbose
+              export MAVEN_OPTS="-Xmx1024m"
+              
+              set +e
+              if [ -z "${{ steps.params.outputs.tags }}" ] || [ "${{ steps.params.outputs.tags }}" = "@all" ]; then
+                echo "▶️ Ejecutando TODOS los tests..."
+                mvn clean test -B -X -e
+              else
+                echo "▶️ Ejecutando tests con tags: ${{ steps.params.outputs.tags }}"
+                mvn clean test -Dcucumber.filter.tags="${{ steps.params.outputs.tags }}" -B -X -e
+              fi
+              TEST_EXIT_CODE=$?
+              set -e
+              
+              echo "🔍 Post-execution check..."
+              echo "Exit code: $TEST_EXIT_CODE"
+              
+              # Verificar si se generaron reportes
+              if [ -d "target/surefire-reports" ]; then
+                echo "✅ target/surefire-reports/ existe"
+                echo "📄 Archivos encontrados:"
+                ls -la target/surefire-reports/
+              else
+                echo "❌ target/surefire-reports/ NO existe"
+              fi
+              
+              if [ -d "target/cucumber-reports" ]; then
+                echo "✅ target/cucumber-reports/ existe"
+              else
+                echo "❌ target/cucumber-reports/ NO existe"
+              fi
+              
+              echo "test_exit_code=$TEST_EXIT_CODE" >> $GITHUB_OUTPUT
+              echo "execution_end_time=$(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_OUTPUT
+              
+              # Verificar reportes más detalladamente
+              if [ -d "target/surefire-reports" ] && [ "$(ls -A target/surefire-reports)" ]; then
+                echo "reports_generated=true" >> $GITHUB_OUTPUT
+              else
+                echo "reports_generated=false" >> $GITHUB_OUTPUT
+              fi
       - name: 🧪 Execute Tests
         id: tests
         run: |
