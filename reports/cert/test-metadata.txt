@@ -1,13 +1,13 @@
 # SIASIS Test Execution Metadata (GitHub Actions)
 
   Entorno: cert
-  Tags ejecutados: @SIASIS-TC-6
+  Tags ejecutados: @login
   Browser usado: chrome
   Ejecución paralela: false
-  Nombre del reporte: cert_login_1751152707
+  Nombre del reporte: cert_login_1751277063
   
   Repository: GeoCoderDev/continuous-testing-selenium-SIASIS-SIU01-WEB
-  Run ID: 15949139851
+  Run ID: 15969664342
   Actor: GeoCoderDev
   
   Exit Code: 0
