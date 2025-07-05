@@ -2,12 +2,12 @@
 
   Entorno: dev
   Tags ejecutados: @directivo
-  Browser usado: edge
+  Browser usado: chrome
   Ejecución paralela: false
-  Nombre del reporte: siu01_web_dev_20250704_193911
+  Nombre del reporte: dev_login_1751691466
 
   Repository: GeoCoderDev/continuous-testing-selenium-SIASIS-SIU01-WEB
-  Run ID: 16063309756
+  Run ID: 16084730407
   Actor: GeoCoderDev
 
   Exit Code: 0
