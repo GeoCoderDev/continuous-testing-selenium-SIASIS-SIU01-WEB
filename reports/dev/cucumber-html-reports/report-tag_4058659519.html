@@ -76,7 +76,7 @@ $(document).ready(function() {
     <tr class="info">
       <td>SIASIS_SELENIUM</td>
         <td>1</td>
-      <td>20 Nov 2025, 22:59</td>
+      <td>20 Nov 2025, 23:13</td>
     </tr>
   </tbody>
 </table>
@@ -129,19 +129,19 @@ $(document).ready(function() {
         <tbody>
         <tr>
           <td class="tagname">@SIU01</td>
-          <td      class="passed"    >7</td>
-          <td      class="failed"    >1</td>
-          <td     class="skipped"   >3</td>
+          <td      class="passed"    >18</td>
           <td >0</td>
           <td >0</td>
-          <td class="total">11</td>
+          <td >0</td>
+          <td >0</td>
+          <td class="total">18</td>
 
-          <td  class="passed"    >1</td>
-          <td  class="failed"    >1</td>
-          <td class="total">2</td>
+          <td  class="passed"    >6</td>
+          <td >0</td>
+          <td class="total">6</td>
 
-          <td class="duration" data-value="12479326040">12.479</td>
-          <td class="failed">Failed</td>
+          <td class="duration" data-value="30012032008">30.012</td>
+          <td class="passed">Passed</td>
         </tr>
         </tbody>
 
@@ -173,30 +173,36 @@ $(document).ready(function() {
 <div class="element">
     <div class="indention">
       <b>Feature:</b>
-      <a href="report-feature_1460859381.html">Edicion de Datos Personales por Rol</a>
+      <a href="report-feature_1764534172.html">Inicio de Sesi&oacute;n en el sistema SIASIS</a>
     </div>
 
 
 <div class="tags indention">
     <b>Tags:</b>
-       <a href="report-tag_1422703828.html">@SIASIS-TC-8</a>
+       <a href="report-tag_1422703821.html">@SIASIS-TC-1</a>
        <a href="report-tag_4078796447.html">@happy</a>
-       <a href="report-tag_3872843290.html">@edicion-datos-personales-propios</a>
+       <a href="report-tag_4082898728.html">@login</a>
+       <a href="report-tag_2209594855.html">@auth</a>
+       <a href="report-tag_2778455227.html">@regresion</a>
+       <a href="report-tag_4089311534.html">@smoke</a>
        <a href="report-tag_4058659519.html">@SIU01</a>
+       <a href="report-tag_2384134367.html">@todos-los-roles</a>
+       <a href="report-tag_1422703822.html">@SIASIS-TC-2</a>
+       <a href="report-tag_1492930584.html">@directivo</a>
+       <a href="report-tag_1872790650.html">@personal-colegio</a>
        <a href="report-tag_4042233146.html">@API01</a>
        <a href="report-tag_4057582239.html">@RDP02</a>
-       <a href="report-tag_1492930584.html">@directivo</a>
 </div>
 
 
-  <span class="lead-duration duration">9.723</span>
+  <span class="lead-duration duration">9.058</span>
 
 
-  <span data-toggle="collapse" class=" collapsable-control" data-target="#element-1">
+  <span data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#element-1">
 
-<div class="brief failed">
-  <span class="keyword indention">Scenario</span>
-  <span class="name">Directivo edita sus propios datos personales</span>
+<div class="brief passed">
+  <span class="keyword indention">Scenario Outline</span>
+  <span class="name">Inicio de sesion al sistema con el rol DIRECTIVO</span>
 
 
      <i class="chevron fa fa-fw"></i>
@@ -205,7 +211,7 @@ $(document).ready(function() {
   </span>
   <div class="description indention"></div>
 
-  <div id="element-1" class="collapse collapsable-details  in ">
+  <div id="element-1" class="collapse collapsable-details ">
 
 
   <div class="inner-level hooks-element-before">
@@ -227,7 +233,7 @@ $(document).ready(function() {
             <span class="keyword indention">Before</span>
               <span class="location name">com.siasis.hooks.Hooks.setUp(io.cucumber.java.Scenario)</span>
 
-  <span class="lead-duration duration">6.547</span>
+  <span class="lead-duration duration">17.320</span>
 
           </div>
 
@@ -244,9 +250,9 @@ $(document).ready(function() {
 
 
 <div class="steps inner-level">
-  <div data-toggle="collapse" class=" collapsable-control" data-target="#steps-3">
+  <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#steps-3">
 
-<div class="brief failed">
+<div class="brief passed">
   <span class="keyword indention">Steps</span>
   <span class="name"></span>
 
@@ -256,7 +262,7 @@ $(document).ready(function() {
 
   </div>
 
-  <div id="steps-3" class="inner-level collapse collapsable-details  in ">
+  <div id="steps-3" class="inner-level collapse collapsable-details ">
       <div class="step">
 
 
@@ -264,7 +270,7 @@ $(document).ready(function() {
   <span class="keyword indention">Given</span>
   <span class="name">Selecciono el rol <span class="argument">DIRECTIVO</span></span>
 
-  <span class="lead-duration duration">2.998</span>
+  <span class="lead-duration duration">2.821</span>
 
 </div>
 
@@ -306,7 +312,7 @@ $(document).ready(function() {
   <span class="keyword indention">And</span>
   <span class="name">Ingreso mi nombre de usuario y contrase&ntilde;a</span>
 
-  <span class="lead-duration duration">0.360</span>
+  <span class="lead-duration duration">0.399</span>
 
 </div>
 
@@ -348,7 +354,7 @@ $(document).ready(function() {
   <span class="keyword indention">Then</span>
   <span class="name">Accedo al sistema como <span class="argument">DIRECTIVO</span></span>
 
-  <span class="lead-duration duration">4.028</span>
+  <span class="lead-duration duration">5.838</span>
 
 </div>
 
@@ -383,193 +389,6 @@ $(document).ready(function() {
 
 
       </div>
-      <div class="step">
-
-
-<div class="brief step-name-When passed">
-  <span class="keyword indention">When</span>
-  <span class="name">Estoy en la p&aacute;gina de edici&oacute;n de perfil</span>
-
-  <span class="lead-duration duration">1.919</span>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-  <div class="embeddings inner-level">
-  <div class="embedding indention">
-    <div data-toggle="collapse" data-target="#embedding-7" class="collapsable-control">
-      <a>Screenshot</a>
-      <a href="embeddings/embedding_-1083379852.png" download target="_blank">
-        <span class="download-button glyphicon glyphicon-download-alt"></span>
-      </a>
-    </div>
-    <div id="embedding-7" class="collapse collapsable-details ">
-      <div class="embedding-content">
-        <img src="embeddings/embedding_-1083379852.png">
-      </div>
-    </div>
-  </div>
-  </div>
-
-
-
-
-      </div>
-      <div class="step">
-
-
-<div class="brief step-name-And failed">
-  <span class="keyword indention">And</span>
-  <span class="name">Edito mis datos personales con los valores aleatorios</span>
-
-  <span class="lead-duration duration">0.415</span>
-
-</div>
-
-
-
-
-
-
-  <div class="inner-level">
-    <div class="message indention">
-      <div data-toggle="collapse" class=" collapsable-control" data-target="#msg-8">
-          <a>java.lang.AssertionError:</a>
-      </div>
-      <div id="msg-8" class="collapse collapsable-details  in ">
-        <pre>java.lang.AssertionError: Error al editar datos personales con valores aleatorios. Error al editar DNI: no such element: Unable to locate element: {&quot;method&quot;:&quot;css selector&quot;,&quot;selector&quot;:&quot;*[name='DNI']&quot;}
-  (Session info: chrome=142.0.7444.162)
-For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
-Build info: version: '4.33.0', revision: '2c6aaad03a'
-System info: os.name: 'Linux', os.arch: 'amd64', os.version: '6.11.0-1018-azure', java.version: '17.0.17'
-Driver info: org.openqa.selenium.chrome.ChromeDriver
-Command: [b27a5ae59ab21db9e68553b673667b0f, findElement {value=DNI, using=name}]
-Capabilities {acceptInsecureCerts: false, browserName: chrome, browserVersion: 142.0.7444.162, chrome: {chromedriverVersion: 142.0.7444.175 (302067f14a4..., userDataDir: /tmp/chrome-test-profile-17...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:39497}, goog:processID: 2270, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: linux, proxy: Proxy(), se:cdp: ws://localhost:39497/devtoo..., se:cdpVersion: 142.0.7444.162, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
-Session ID: b27a5ae59ab21db9e68553b673667b0f
-	at com.siasis.stepDefinitions.DatosPersonalesStepDefinitions.editoMisDatosPersonalesConLosValoresAleatorios(DatosPersonalesStepDefinitions.java:89)
-	at ✽.Edito mis datos personales con los valores aleatorios(file:///home/runner/work/continuous-testing-selenium-SIASIS-SIU01-WEB/continuous-testing-selenium-SIASIS-SIU01-WEB/src/test/resources/features/EdicionDatosPersonales.feature:15)
-</pre>
-      </div>
-    </div>
-  </div>
-
-
-
-
-
-
-
-  <div class="embeddings inner-level">
-  <div class="embedding indention">
-    <div data-toggle="collapse" data-target="#embedding-9" class="collapsable-control">
-      <a>Screenshot</a>
-      <a href="embeddings/embedding_100630230.png" download target="_blank">
-        <span class="download-button glyphicon glyphicon-download-alt"></span>
-      </a>
-    </div>
-    <div id="embedding-9" class="collapse collapsable-details ">
-      <div class="embedding-content">
-        <img src="embeddings/embedding_100630230.png">
-      </div>
-    </div>
-  </div>
-  </div>
-
-
-
-
-      </div>
-      <div class="step">
-
-
-<div class="brief step-name-Then skipped">
-  <span class="keyword indention">Then</span>
-  <span class="name">Verifico que se han guardado los cambios</span>
-
-  <span class="lead-duration duration">0.000</span>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      </div>
-      <div class="step">
-
-
-<div class="brief step-name-And skipped">
-  <span class="keyword indention">And</span>
-  <span class="name">Restauro los datos originales</span>
-
-  <span class="lead-duration duration">0.000</span>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      </div>
-      <div class="step">
-
-
-<div class="brief step-name-Then skipped">
-  <span class="keyword indention">Then</span>
-  <span class="name">verifico que los datos originales son correctos</span>
-
-  <span class="lead-duration duration">0.000</span>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      </div>
   </div>
 </div>
 
@@ -577,7 +396,7 @@ Session ID: b27a5ae59ab21db9e68553b673667b0f
 
 
   <div class="inner-level hooks-element-after">
-    <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#after-10">
+    <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#after-7">
 
 <div class="brief passed">
   <span class="keyword indention">Hooks</span>
@@ -589,13 +408,13 @@ Session ID: b27a5ae59ab21db9e68553b673667b0f
 
     </div>
 
-    <div id="after-10" class="inner-level collapse collapsable-details ">
+    <div id="after-7" class="inner-level collapse collapsable-details ">
         <div class="hook">
           <div class="brief passed">
             <span class="keyword indention">After</span>
               <span class="location name">com.siasis.hooks.Hooks.tearDown(io.cucumber.java.Scenario)</span>
 
-  <span class="lead-duration duration">0.262</span>
+  <span class="lead-duration duration">0.129</span>
 
           </div>
 
@@ -604,21 +423,6 @@ Session ID: b27a5ae59ab21db9e68553b673667b0f
 
 
 
-  <div class="embeddings inner-level">
-  <div class="embedding indention">
-    <div data-toggle="collapse" data-target="#embedding-11" class="collapsable-control">
-      <a>Screenshot</a>
-      <a href="embeddings/embedding_-1234801726.png" download target="_blank">
-        <span class="download-button glyphicon glyphicon-download-alt"></span>
-      </a>
-    </div>
-    <div id="embedding-11" class="collapse collapsable-details ">
-      <div class="embedding-content">
-        <img src="embeddings/embedding_-1234801726.png">
-      </div>
-    </div>
-  </div>
-  </div>
 
         </div>
     </div>
@@ -631,7 +435,7 @@ Session ID: b27a5ae59ab21db9e68553b673667b0f
 <div class="element">
     <div class="indention">
       <b>Feature:</b>
-      <a href="report-feature_1_1764534172.html">Inicio de Sesi&oacute;n en el sistema SIASIS</a>
+      <a href="report-feature_1764534172.html">Inicio de Sesi&oacute;n en el sistema SIASIS</a>
     </div>
 
 
@@ -645,22 +449,22 @@ Session ID: b27a5ae59ab21db9e68553b673667b0f
        <a href="report-tag_4089311534.html">@smoke</a>
        <a href="report-tag_4058659519.html">@SIU01</a>
        <a href="report-tag_2384134367.html">@todos-los-roles</a>
-       <a href="report-tag_1422703822.html">@SIASIS-TC-2</a>
-       <a href="report-tag_1492930584.html">@directivo</a>
+       <a href="report-tag_1422703823.html">@SIASIS-TC-3</a>
+       <a href="report-tag_118017265.html">@profesor-primaria</a>
        <a href="report-tag_1872790650.html">@personal-colegio</a>
        <a href="report-tag_4042233146.html">@API01</a>
        <a href="report-tag_4057582239.html">@RDP02</a>
 </div>
 
 
-  <span class="lead-duration duration">2.755</span>
+  <span class="lead-duration duration">3.853</span>
 
 
-  <span data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#element-12">
+  <span data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#element-8">
 
 <div class="brief passed">
   <span class="keyword indention">Scenario Outline</span>
-  <span class="name">Inicio de sesion al sistema con el rol DIRECTIVO</span>
+  <span class="name">Inicio de sesion al sistema con el rol PROFESOR_PRIMARIA</span>
 
 
      <i class="chevron fa fa-fw"></i>
@@ -669,11 +473,11 @@ Session ID: b27a5ae59ab21db9e68553b673667b0f
   </span>
   <div class="description indention"></div>
 
-  <div id="element-12" class="collapse collapsable-details ">
+  <div id="element-8" class="collapse collapsable-details ">
 
 
   <div class="inner-level hooks-element-before">
-    <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#before-13">
+    <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#before-9">
 
 <div class="brief passed">
   <span class="keyword indention">Hooks</span>
@@ -685,13 +489,13 @@ Session ID: b27a5ae59ab21db9e68553b673667b0f
 
     </div>
 
-    <div id="before-13" class="inner-level collapse collapsable-details ">
+    <div id="before-9" class="inner-level collapse collapsable-details ">
         <div class="hook">
           <div class="brief passed">
             <span class="keyword indention">Before</span>
               <span class="location name">com.siasis.hooks.Hooks.setUp(io.cucumber.java.Scenario)</span>
 
-  <span class="lead-duration duration">0.349</span>
+  <span class="lead-duration duration">0.338</span>
 
           </div>
 
@@ -708,7 +512,7 @@ Session ID: b27a5ae59ab21db9e68553b673667b0f
 
 
 <div class="steps inner-level">
-  <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#steps-14">
+  <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#steps-10">
 
 <div class="brief passed">
   <span class="keyword indention">Steps</span>
@@ -720,15 +524,15 @@ Session ID: b27a5ae59ab21db9e68553b673667b0f
 
   </div>
 
-  <div id="steps-14" class="inner-level collapse collapsable-details ">
+  <div id="steps-10" class="inner-level collapse collapsable-details ">
       <div class="step">
 
 
 <div class="brief step-name-Given passed">
   <span class="keyword indention">Given</span>
-  <span class="name">Selecciono el rol <span class="argument">DIRECTIVO</span></span>
+  <span class="name">Selecciono el rol <span class="argument">PROFESOR_PRIMARIA</span></span>
 
-  <span class="lead-duration duration">0.825</span>
+  <span class="lead-duration duration">0.963</span>
 
 </div>
 
@@ -745,15 +549,15 @@ Session ID: b27a5ae59ab21db9e68553b673667b0f
 
   <div class="embeddings inner-level">
   <div class="embedding indention">
-    <div data-toggle="collapse" data-target="#embedding-15" class="collapsable-control">
+    <div data-toggle="collapse" data-target="#embedding-11" class="collapsable-control">
       <a>Screenshot</a>
-      <a href="embeddings/embedding_-103592788.png" download target="_blank">
+      <a href="embeddings/embedding_1733285973.png" download target="_blank">
         <span class="download-button glyphicon glyphicon-download-alt"></span>
       </a>
     </div>
-    <div id="embedding-15" class="collapse collapsable-details ">
+    <div id="embedding-11" class="collapse collapsable-details ">
       <div class="embedding-content">
-        <img src="embeddings/embedding_-103592788.png">
+        <img src="embeddings/embedding_1733285973.png">
       </div>
     </div>
   </div>
@@ -770,7 +574,7 @@ Session ID: b27a5ae59ab21db9e68553b673667b0f
   <span class="keyword indention">And</span>
   <span class="name">Ingreso mi nombre de usuario y contrase&ntilde;a</span>
 
-  <span class="lead-duration duration">0.305</span>
+  <span class="lead-duration duration">0.308</span>
 
 </div>
 
@@ -787,15 +591,15 @@ Session ID: b27a5ae59ab21db9e68553b673667b0f
 
   <div class="embeddings inner-level">
   <div class="embedding indention">
-    <div data-toggle="collapse" data-target="#embedding-16" class="collapsable-control">
+    <div data-toggle="collapse" data-target="#embedding-12" class="collapsable-control">
       <a>Screenshot</a>
-      <a href="embeddings/embedding_1283617732.png" download target="_blank">
+      <a href="embeddings/embedding_-1266792275.png" download target="_blank">
         <span class="download-button glyphicon glyphicon-download-alt"></span>
       </a>
     </div>
-    <div id="embedding-16" class="collapse collapsable-details ">
+    <div id="embedding-12" class="collapse collapsable-details ">
       <div class="embedding-content">
-        <img src="embeddings/embedding_1283617732.png">
+        <img src="embeddings/embedding_-1266792275.png">
       </div>
     </div>
   </div>
@@ -810,9 +614,9 @@ Session ID: b27a5ae59ab21db9e68553b673667b0f
 
 <div class="brief step-name-Then passed">
   <span class="keyword indention">Then</span>
-  <span class="name">Accedo al sistema como <span class="argument">DIRECTIVO</span></span>
+  <span class="name">Accedo al sistema como <span class="argument">PROFESOR_PRIMARIA</span></span>
 
-  <span class="lead-duration duration">1.624</span>
+  <span class="lead-duration duration">2.582</span>
 
 </div>
 
@@ -829,15 +633,15 @@ Session ID: b27a5ae59ab21db9e68553b673667b0f
 
   <div class="embeddings inner-level">
   <div class="embedding indention">
-    <div data-toggle="collapse" data-target="#embedding-17" class="collapsable-control">
+    <div data-toggle="collapse" data-target="#embedding-13" class="collapsable-control">
       <a>Screenshot</a>
-      <a href="embeddings/embedding_706464208.png" download target="_blank">
+      <a href="embeddings/embedding_-964346589.png" download target="_blank">
         <span class="download-button glyphicon glyphicon-download-alt"></span>
       </a>
     </div>
-    <div id="embedding-17" class="collapse collapsable-details ">
+    <div id="embedding-13" class="collapse collapsable-details ">
       <div class="embedding-content">
-        <img src="embeddings/embedding_706464208.png">
+        <img src="embeddings/embedding_-964346589.png">
       </div>
     </div>
   </div>
@@ -854,7 +658,7 @@ Session ID: b27a5ae59ab21db9e68553b673667b0f
 
 
   <div class="inner-level hooks-element-after">
-    <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#after-18">
+    <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#after-14">
 
 <div class="brief passed">
   <span class="keyword indention">Hooks</span>
@@ -866,13 +670,1061 @@ Session ID: b27a5ae59ab21db9e68553b673667b0f
 
     </div>
 
-    <div id="after-18" class="inner-level collapse collapsable-details ">
+    <div id="after-14" class="inner-level collapse collapsable-details ">
+        <div class="hook">
+          <div class="brief passed">
+            <span class="keyword indention">After</span>
+              <span class="location name">com.siasis.hooks.Hooks.tearDown(io.cucumber.java.Scenario)</span>
+
+  <span class="lead-duration duration">0.097</span>
+
+          </div>
+
+
+
+
+
+
+
+        </div>
+    </div>
+  </div>
+
+  </div>
+</div>
+
+
+<div class="element">
+    <div class="indention">
+      <b>Feature:</b>
+      <a href="report-feature_1764534172.html">Inicio de Sesi&oacute;n en el sistema SIASIS</a>
+    </div>
+
+
+<div class="tags indention">
+    <b>Tags:</b>
+       <a href="report-tag_1422703821.html">@SIASIS-TC-1</a>
+       <a href="report-tag_4078796447.html">@happy</a>
+       <a href="report-tag_4082898728.html">@login</a>
+       <a href="report-tag_2209594855.html">@auth</a>
+       <a href="report-tag_2778455227.html">@regresion</a>
+       <a href="report-tag_4089311534.html">@smoke</a>
+       <a href="report-tag_4058659519.html">@SIU01</a>
+       <a href="report-tag_2384134367.html">@todos-los-roles</a>
+       <a href="report-tag_1422703824.html">@SIASIS-TC-4</a>
+       <a href="report-tag_3982930514.html">@auxiliar</a>
+       <a href="report-tag_1872790650.html">@personal-colegio</a>
+       <a href="report-tag_4042233146.html">@API01</a>
+       <a href="report-tag_4057582239.html">@RDP02</a>
+</div>
+
+
+  <span class="lead-duration duration">4.832</span>
+
+
+  <span data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#element-15">
+
+<div class="brief passed">
+  <span class="keyword indention">Scenario Outline</span>
+  <span class="name">Inicio de sesion al sistema con el rol AUXILIAR</span>
+
+
+     <i class="chevron fa fa-fw"></i>
+</div>
+
+  </span>
+  <div class="description indention"></div>
+
+  <div id="element-15" class="collapse collapsable-details ">
+
+
+  <div class="inner-level hooks-element-before">
+    <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#before-16">
+
+<div class="brief passed">
+  <span class="keyword indention">Hooks</span>
+  <span class="name"></span>
+
+
+     <i class="chevron fa fa-fw"></i>
+</div>
+
+    </div>
+
+    <div id="before-16" class="inner-level collapse collapsable-details ">
+        <div class="hook">
+          <div class="brief passed">
+            <span class="keyword indention">Before</span>
+              <span class="location name">com.siasis.hooks.Hooks.setUp(io.cucumber.java.Scenario)</span>
+
+  <span class="lead-duration duration">0.247</span>
+
+          </div>
+
+
+
+
+
+
+
+        </div>
+    </div>
+  </div>
+
+
+
+<div class="steps inner-level">
+  <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#steps-17">
+
+<div class="brief passed">
+  <span class="keyword indention">Steps</span>
+  <span class="name"></span>
+
+
+     <i class="chevron fa fa-fw"></i>
+</div>
+
+  </div>
+
+  <div id="steps-17" class="inner-level collapse collapsable-details ">
+      <div class="step">
+
+
+<div class="brief step-name-Given passed">
+  <span class="keyword indention">Given</span>
+  <span class="name">Selecciono el rol <span class="argument">AUXILIAR</span></span>
+
+  <span class="lead-duration duration">1.218</span>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="embeddings inner-level">
+  <div class="embedding indention">
+    <div data-toggle="collapse" data-target="#embedding-18" class="collapsable-control">
+      <a>Screenshot</a>
+      <a href="embeddings/embedding_-1864139244.png" download target="_blank">
+        <span class="download-button glyphicon glyphicon-download-alt"></span>
+      </a>
+    </div>
+    <div id="embedding-18" class="collapse collapsable-details ">
+      <div class="embedding-content">
+        <img src="embeddings/embedding_-1864139244.png">
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+
+
+      </div>
+      <div class="step">
+
+
+<div class="brief step-name-And passed">
+  <span class="keyword indention">And</span>
+  <span class="name">Ingreso mi nombre de usuario y contrase&ntilde;a</span>
+
+  <span class="lead-duration duration">0.250</span>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="embeddings inner-level">
+  <div class="embedding indention">
+    <div data-toggle="collapse" data-target="#embedding-19" class="collapsable-control">
+      <a>Screenshot</a>
+      <a href="embeddings/embedding_506541024.png" download target="_blank">
+        <span class="download-button glyphicon glyphicon-download-alt"></span>
+      </a>
+    </div>
+    <div id="embedding-19" class="collapse collapsable-details ">
+      <div class="embedding-content">
+        <img src="embeddings/embedding_506541024.png">
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+
+
+      </div>
+      <div class="step">
+
+
+<div class="brief step-name-Then passed">
+  <span class="keyword indention">Then</span>
+  <span class="name">Accedo al sistema como <span class="argument">AUXILIAR</span></span>
+
+  <span class="lead-duration duration">3.363</span>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="embeddings inner-level">
+  <div class="embedding indention">
+    <div data-toggle="collapse" data-target="#embedding-20" class="collapsable-control">
+      <a>Screenshot</a>
+      <a href="embeddings/embedding_-49317864.png" download target="_blank">
+        <span class="download-button glyphicon glyphicon-download-alt"></span>
+      </a>
+    </div>
+    <div id="embedding-20" class="collapse collapsable-details ">
+      <div class="embedding-content">
+        <img src="embeddings/embedding_-49317864.png">
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+
+
+      </div>
+  </div>
+</div>
+
+
+
+
+  <div class="inner-level hooks-element-after">
+    <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#after-21">
+
+<div class="brief passed">
+  <span class="keyword indention">Hooks</span>
+  <span class="name"></span>
+
+
+     <i class="chevron fa fa-fw"></i>
+</div>
+
+    </div>
+
+    <div id="after-21" class="inner-level collapse collapsable-details ">
         <div class="hook">
           <div class="brief passed">
             <span class="keyword indention">After</span>
               <span class="location name">com.siasis.hooks.Hooks.tearDown(io.cucumber.java.Scenario)</span>
 
   <span class="lead-duration duration">0.074</span>
+
+          </div>
+
+
+
+
+
+
+
+        </div>
+    </div>
+  </div>
+
+  </div>
+</div>
+
+
+<div class="element">
+    <div class="indention">
+      <b>Feature:</b>
+      <a href="report-feature_1764534172.html">Inicio de Sesi&oacute;n en el sistema SIASIS</a>
+    </div>
+
+
+<div class="tags indention">
+    <b>Tags:</b>
+       <a href="report-tag_1422703821.html">@SIASIS-TC-1</a>
+       <a href="report-tag_4078796447.html">@happy</a>
+       <a href="report-tag_4082898728.html">@login</a>
+       <a href="report-tag_2209594855.html">@auth</a>
+       <a href="report-tag_2778455227.html">@regresion</a>
+       <a href="report-tag_4089311534.html">@smoke</a>
+       <a href="report-tag_4058659519.html">@SIU01</a>
+       <a href="report-tag_2384134367.html">@todos-los-roles</a>
+       <a href="report-tag_1422703825.html">@SIASIS-TC-5</a>
+       <a href="report-tag_180172421.html">@profesor-secundaria</a>
+       <a href="report-tag_1872790650.html">@personal-colegio</a>
+       <a href="report-tag_4042233146.html">@API01</a>
+       <a href="report-tag_4057582239.html">@RDP02</a>
+</div>
+
+
+  <span class="lead-duration duration">5.957</span>
+
+
+  <span data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#element-22">
+
+<div class="brief passed">
+  <span class="keyword indention">Scenario Outline</span>
+  <span class="name">Inicio de sesion al sistema con el rol PROFESOR_SECUNDARIA</span>
+
+
+     <i class="chevron fa fa-fw"></i>
+</div>
+
+  </span>
+  <div class="description indention"></div>
+
+  <div id="element-22" class="collapse collapsable-details ">
+
+
+  <div class="inner-level hooks-element-before">
+    <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#before-23">
+
+<div class="brief passed">
+  <span class="keyword indention">Hooks</span>
+  <span class="name"></span>
+
+
+     <i class="chevron fa fa-fw"></i>
+</div>
+
+    </div>
+
+    <div id="before-23" class="inner-level collapse collapsable-details ">
+        <div class="hook">
+          <div class="brief passed">
+            <span class="keyword indention">Before</span>
+              <span class="location name">com.siasis.hooks.Hooks.setUp(io.cucumber.java.Scenario)</span>
+
+  <span class="lead-duration duration">0.249</span>
+
+          </div>
+
+
+
+
+
+
+
+        </div>
+    </div>
+  </div>
+
+
+
+<div class="steps inner-level">
+  <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#steps-24">
+
+<div class="brief passed">
+  <span class="keyword indention">Steps</span>
+  <span class="name"></span>
+
+
+     <i class="chevron fa fa-fw"></i>
+</div>
+
+  </div>
+
+  <div id="steps-24" class="inner-level collapse collapsable-details ">
+      <div class="step">
+
+
+<div class="brief step-name-Given passed">
+  <span class="keyword indention">Given</span>
+  <span class="name">Selecciono el rol <span class="argument">PROFESOR_SECUNDARIA</span></span>
+
+  <span class="lead-duration duration">0.879</span>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="embeddings inner-level">
+  <div class="embedding indention">
+    <div data-toggle="collapse" data-target="#embedding-25" class="collapsable-control">
+      <a>Screenshot</a>
+      <a href="embeddings/embedding_-2059609055.png" download target="_blank">
+        <span class="download-button glyphicon glyphicon-download-alt"></span>
+      </a>
+    </div>
+    <div id="embedding-25" class="collapse collapsable-details ">
+      <div class="embedding-content">
+        <img src="embeddings/embedding_-2059609055.png">
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+
+
+      </div>
+      <div class="step">
+
+
+<div class="brief step-name-And passed">
+  <span class="keyword indention">And</span>
+  <span class="name">Ingreso mi nombre de usuario y contrase&ntilde;a</span>
+
+  <span class="lead-duration duration">0.311</span>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="embeddings inner-level">
+  <div class="embedding indention">
+    <div data-toggle="collapse" data-target="#embedding-26" class="collapsable-control">
+      <a>Screenshot</a>
+      <a href="embeddings/embedding_-285073080.png" download target="_blank">
+        <span class="download-button glyphicon glyphicon-download-alt"></span>
+      </a>
+    </div>
+    <div id="embedding-26" class="collapse collapsable-details ">
+      <div class="embedding-content">
+        <img src="embeddings/embedding_-285073080.png">
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+
+
+      </div>
+      <div class="step">
+
+
+<div class="brief step-name-Then passed">
+  <span class="keyword indention">Then</span>
+  <span class="name">Accedo al sistema como <span class="argument">PROFESOR_SECUNDARIA</span></span>
+
+  <span class="lead-duration duration">4.766</span>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="embeddings inner-level">
+  <div class="embedding indention">
+    <div data-toggle="collapse" data-target="#embedding-27" class="collapsable-control">
+      <a>Screenshot</a>
+      <a href="embeddings/embedding_2121380535.png" download target="_blank">
+        <span class="download-button glyphicon glyphicon-download-alt"></span>
+      </a>
+    </div>
+    <div id="embedding-27" class="collapse collapsable-details ">
+      <div class="embedding-content">
+        <img src="embeddings/embedding_2121380535.png">
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+
+
+      </div>
+  </div>
+</div>
+
+
+
+
+  <div class="inner-level hooks-element-after">
+    <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#after-28">
+
+<div class="brief passed">
+  <span class="keyword indention">Hooks</span>
+  <span class="name"></span>
+
+
+     <i class="chevron fa fa-fw"></i>
+</div>
+
+    </div>
+
+    <div id="after-28" class="inner-level collapse collapsable-details ">
+        <div class="hook">
+          <div class="brief passed">
+            <span class="keyword indention">After</span>
+              <span class="location name">com.siasis.hooks.Hooks.tearDown(io.cucumber.java.Scenario)</span>
+
+  <span class="lead-duration duration">0.074</span>
+
+          </div>
+
+
+
+
+
+
+
+        </div>
+    </div>
+  </div>
+
+  </div>
+</div>
+
+
+<div class="element">
+    <div class="indention">
+      <b>Feature:</b>
+      <a href="report-feature_1764534172.html">Inicio de Sesi&oacute;n en el sistema SIASIS</a>
+    </div>
+
+
+<div class="tags indention">
+    <b>Tags:</b>
+       <a href="report-tag_1422703821.html">@SIASIS-TC-1</a>
+       <a href="report-tag_4078796447.html">@happy</a>
+       <a href="report-tag_4082898728.html">@login</a>
+       <a href="report-tag_2209594855.html">@auth</a>
+       <a href="report-tag_2778455227.html">@regresion</a>
+       <a href="report-tag_4089311534.html">@smoke</a>
+       <a href="report-tag_4058659519.html">@SIU01</a>
+       <a href="report-tag_2384134367.html">@todos-los-roles</a>
+       <a href="report-tag_1422703826.html">@SIASIS-TC-6</a>
+       <a href="report-tag_4090478325.html">@tutor</a>
+       <a href="report-tag_1872790650.html">@personal-colegio</a>
+       <a href="report-tag_4042233146.html">@API01</a>
+       <a href="report-tag_4057582239.html">@RDP02</a>
+</div>
+
+
+  <span class="lead-duration duration">3.311</span>
+
+
+  <span data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#element-29">
+
+<div class="brief passed">
+  <span class="keyword indention">Scenario Outline</span>
+  <span class="name">Inicio de sesion al sistema con el rol TUTOR</span>
+
+
+     <i class="chevron fa fa-fw"></i>
+</div>
+
+  </span>
+  <div class="description indention"></div>
+
+  <div id="element-29" class="collapse collapsable-details ">
+
+
+  <div class="inner-level hooks-element-before">
+    <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#before-30">
+
+<div class="brief passed">
+  <span class="keyword indention">Hooks</span>
+  <span class="name"></span>
+
+
+     <i class="chevron fa fa-fw"></i>
+</div>
+
+    </div>
+
+    <div id="before-30" class="inner-level collapse collapsable-details ">
+        <div class="hook">
+          <div class="brief passed">
+            <span class="keyword indention">Before</span>
+              <span class="location name">com.siasis.hooks.Hooks.setUp(io.cucumber.java.Scenario)</span>
+
+  <span class="lead-duration duration">0.249</span>
+
+          </div>
+
+
+
+
+
+
+
+        </div>
+    </div>
+  </div>
+
+
+
+<div class="steps inner-level">
+  <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#steps-31">
+
+<div class="brief passed">
+  <span class="keyword indention">Steps</span>
+  <span class="name"></span>
+
+
+     <i class="chevron fa fa-fw"></i>
+</div>
+
+  </div>
+
+  <div id="steps-31" class="inner-level collapse collapsable-details ">
+      <div class="step">
+
+
+<div class="brief step-name-Given passed">
+  <span class="keyword indention">Given</span>
+  <span class="name">Selecciono el rol <span class="argument">TUTOR</span></span>
+
+  <span class="lead-duration duration">0.723</span>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="embeddings inner-level">
+  <div class="embedding indention">
+    <div data-toggle="collapse" data-target="#embedding-32" class="collapsable-control">
+      <a>Screenshot</a>
+      <a href="embeddings/embedding_-2059609055.png" download target="_blank">
+        <span class="download-button glyphicon glyphicon-download-alt"></span>
+      </a>
+    </div>
+    <div id="embedding-32" class="collapse collapsable-details ">
+      <div class="embedding-content">
+        <img src="embeddings/embedding_-2059609055.png">
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+
+
+      </div>
+      <div class="step">
+
+
+<div class="brief step-name-And passed">
+  <span class="keyword indention">And</span>
+  <span class="name">Ingreso mi nombre de usuario y contrase&ntilde;a</span>
+
+  <span class="lead-duration duration">0.316</span>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="embeddings inner-level">
+  <div class="embedding indention">
+    <div data-toggle="collapse" data-target="#embedding-33" class="collapsable-control">
+      <a>Screenshot</a>
+      <a href="embeddings/embedding_1025788043.png" download target="_blank">
+        <span class="download-button glyphicon glyphicon-download-alt"></span>
+      </a>
+    </div>
+    <div id="embedding-33" class="collapse collapsable-details ">
+      <div class="embedding-content">
+        <img src="embeddings/embedding_1025788043.png">
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+
+
+      </div>
+      <div class="step">
+
+
+<div class="brief step-name-Then passed">
+  <span class="keyword indention">Then</span>
+  <span class="name">Accedo al sistema como <span class="argument">TUTOR</span></span>
+
+  <span class="lead-duration duration">2.271</span>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="embeddings inner-level">
+  <div class="embedding indention">
+    <div data-toggle="collapse" data-target="#embedding-34" class="collapsable-control">
+      <a>Screenshot</a>
+      <a href="embeddings/embedding_-2092427341.png" download target="_blank">
+        <span class="download-button glyphicon glyphicon-download-alt"></span>
+      </a>
+    </div>
+    <div id="embedding-34" class="collapse collapsable-details ">
+      <div class="embedding-content">
+        <img src="embeddings/embedding_-2092427341.png">
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+
+
+      </div>
+  </div>
+</div>
+
+
+
+
+  <div class="inner-level hooks-element-after">
+    <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#after-35">
+
+<div class="brief passed">
+  <span class="keyword indention">Hooks</span>
+  <span class="name"></span>
+
+
+     <i class="chevron fa fa-fw"></i>
+</div>
+
+    </div>
+
+    <div id="after-35" class="inner-level collapse collapsable-details ">
+        <div class="hook">
+          <div class="brief passed">
+            <span class="keyword indention">After</span>
+              <span class="location name">com.siasis.hooks.Hooks.tearDown(io.cucumber.java.Scenario)</span>
+
+  <span class="lead-duration duration">0.073</span>
+
+          </div>
+
+
+
+
+
+
+
+        </div>
+    </div>
+  </div>
+
+  </div>
+</div>
+
+
+<div class="element">
+    <div class="indention">
+      <b>Feature:</b>
+      <a href="report-feature_1764534172.html">Inicio de Sesi&oacute;n en el sistema SIASIS</a>
+    </div>
+
+
+<div class="tags indention">
+    <b>Tags:</b>
+       <a href="report-tag_1422703821.html">@SIASIS-TC-1</a>
+       <a href="report-tag_4078796447.html">@happy</a>
+       <a href="report-tag_4082898728.html">@login</a>
+       <a href="report-tag_2209594855.html">@auth</a>
+       <a href="report-tag_2778455227.html">@regresion</a>
+       <a href="report-tag_4089311534.html">@smoke</a>
+       <a href="report-tag_4058659519.html">@SIU01</a>
+       <a href="report-tag_2384134367.html">@todos-los-roles</a>
+       <a href="report-tag_1422703827.html">@SIASIS-TC-7</a>
+       <a href="report-tag_646608932.html">@personal-administrativo</a>
+       <a href="report-tag_1872790650.html">@personal-colegio</a>
+       <a href="report-tag_4042233146.html">@API01</a>
+       <a href="report-tag_4057582239.html">@RDP02</a>
+</div>
+
+
+  <span class="lead-duration duration">2.997</span>
+
+
+  <span data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#element-36">
+
+<div class="brief passed">
+  <span class="keyword indention">Scenario Outline</span>
+  <span class="name">Inicio de sesion al sistema con el rol PERSONAL_ADMINISTRATIVO</span>
+
+
+     <i class="chevron fa fa-fw"></i>
+</div>
+
+  </span>
+  <div class="description indention"></div>
+
+  <div id="element-36" class="collapse collapsable-details ">
+
+
+  <div class="inner-level hooks-element-before">
+    <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#before-37">
+
+<div class="brief passed">
+  <span class="keyword indention">Hooks</span>
+  <span class="name"></span>
+
+
+     <i class="chevron fa fa-fw"></i>
+</div>
+
+    </div>
+
+    <div id="before-37" class="inner-level collapse collapsable-details ">
+        <div class="hook">
+          <div class="brief passed">
+            <span class="keyword indention">Before</span>
+              <span class="location name">com.siasis.hooks.Hooks.setUp(io.cucumber.java.Scenario)</span>
+
+  <span class="lead-duration duration">0.249</span>
+
+          </div>
+
+
+
+
+
+
+
+        </div>
+    </div>
+  </div>
+
+
+
+<div class="steps inner-level">
+  <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#steps-38">
+
+<div class="brief passed">
+  <span class="keyword indention">Steps</span>
+  <span class="name"></span>
+
+
+     <i class="chevron fa fa-fw"></i>
+</div>
+
+  </div>
+
+  <div id="steps-38" class="inner-level collapse collapsable-details ">
+      <div class="step">
+
+
+<div class="brief step-name-Given passed">
+  <span class="keyword indention">Given</span>
+  <span class="name">Selecciono el rol <span class="argument">PERSONAL_ADMINISTRATIVO</span></span>
+
+  <span class="lead-duration duration">1.220</span>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="embeddings inner-level">
+  <div class="embedding indention">
+    <div data-toggle="collapse" data-target="#embedding-39" class="collapsable-control">
+      <a>Screenshot</a>
+      <a href="embeddings/embedding_-924468703.png" download target="_blank">
+        <span class="download-button glyphicon glyphicon-download-alt"></span>
+      </a>
+    </div>
+    <div id="embedding-39" class="collapse collapsable-details ">
+      <div class="embedding-content">
+        <img src="embeddings/embedding_-924468703.png">
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+
+
+      </div>
+      <div class="step">
+
+
+<div class="brief step-name-And passed">
+  <span class="keyword indention">And</span>
+  <span class="name">Ingreso mi nombre de usuario y contrase&ntilde;a</span>
+
+  <span class="lead-duration duration">0.249</span>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="embeddings inner-level">
+  <div class="embedding indention">
+    <div data-toggle="collapse" data-target="#embedding-40" class="collapsable-control">
+      <a>Screenshot</a>
+      <a href="embeddings/embedding_-1007188625.png" download target="_blank">
+        <span class="download-button glyphicon glyphicon-download-alt"></span>
+      </a>
+    </div>
+    <div id="embedding-40" class="collapse collapsable-details ">
+      <div class="embedding-content">
+        <img src="embeddings/embedding_-1007188625.png">
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+
+
+      </div>
+      <div class="step">
+
+
+<div class="brief step-name-Then passed">
+  <span class="keyword indention">Then</span>
+  <span class="name">Accedo al sistema como <span class="argument">PERSONAL_ADMINISTRATIVO</span></span>
+
+  <span class="lead-duration duration">1.526</span>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="embeddings inner-level">
+  <div class="embedding indention">
+    <div data-toggle="collapse" data-target="#embedding-41" class="collapsable-control">
+      <a>Screenshot</a>
+      <a href="embeddings/embedding_112227477.png" download target="_blank">
+        <span class="download-button glyphicon glyphicon-download-alt"></span>
+      </a>
+    </div>
+    <div id="embedding-41" class="collapse collapsable-details ">
+      <div class="embedding-content">
+        <img src="embeddings/embedding_112227477.png">
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+
+
+      </div>
+  </div>
+</div>
+
+
+
+
+  <div class="inner-level hooks-element-after">
+    <div data-toggle="collapse" class=" collapsed  collapsable-control" data-target="#after-42">
+
+<div class="brief passed">
+  <span class="keyword indention">Hooks</span>
+  <span class="name"></span>
+
+
+     <i class="chevron fa fa-fw"></i>
+</div>
+
+    </div>
+
+    <div id="after-42" class="inner-level collapse collapsable-details ">
+        <div class="hook">
+          <div class="brief passed">
+            <span class="keyword indention">After</span>
+              <span class="location name">com.siasis.hooks.Hooks.tearDown(io.cucumber.java.Scenario)</span>
+
+  <span class="lead-duration duration">0.069</span>
 
           </div>
 
