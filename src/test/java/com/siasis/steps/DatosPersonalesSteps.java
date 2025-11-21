@@ -197,4 +197,40 @@ public class DatosPersonalesSteps {
             throw new AssertionError("Error al hacer click en el botón Buscar: " + e.getMessage());
         }
     }
+
+    public void seleccionarTipoPersonal(String tipoPersonal) {
+        try {
+            datosPersonalesPage.seleccionarTipoPersonal(tipoPersonal);
+        } catch (Exception e) {
+            throw new AssertionError("Error al seleccionar tipo de personal: " + tipoPersonal + ". " + e.getMessage());
+        }
+    }
+
+    public void completarBusquedaPersonal(String tipoPersonal) {
+        try {
+            // Seleccionar el div correcto según el tipo de personal
+            String textoDiv = "";
+            switch (tipoPersonal) {
+                case "Profesor de Primaria":
+                    textoDiv = "Seleccionar Profesor de Primaria";
+                    break;
+                case "Profesor de Secundaria":
+                    textoDiv = "Seleccionar Profesor de Secundaria";
+                    break;
+                case "Auxiliar":
+                    textoDiv = "Seleccionar Auxiliar";
+                    break;
+                case "Personal Administrativo":
+                    textoDiv = "Seleccionar Personal Administrativo";
+                    break;
+                default:
+                    throw new AssertionError("Tipo de personal no soportado: " + tipoPersonal);
+            }
+            datosPersonalesPage.clickDivSeleccionarPersonalPorTexto(textoDiv);
+            datosPersonalesPage.seleccionarPrimerProfesorDeLista();
+            datosPersonalesPage.seleccionarMesAleatorioMayorAJunio();
+        } catch (Exception e) {
+            throw new AssertionError("Error al completar el campo de búsqueda del personal: " + e.getMessage());
+        }
+    }
 }

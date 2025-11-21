@@ -128,10 +128,21 @@ public class DatosPersonalesPage {
             WebElement registroSpan = wait.until(
                 ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='Registros']"))
             );
+            // Intentar click normal
             registroSpan.click();
-            System.out.println("✅ Click en el apartado de Registro de Personal realizado");
+            // Esperar que cambie la URL o que aparezca el select de tipo de personal
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//select[option[contains(text(),'Seleccionar tipo de personal')]]")));
+            System.out.println("✅ Click en el apartado de Registro de Personal realizado y vista cargada");
         } catch (Exception e) {
-            throw new RuntimeException("No se pudo hacer click en el apartado de Registro de Personal: " + e.getMessage());
+            // Si el click normal falla, intentar con JavaScript
+            try {
+                WebElement registroSpan = driver.findElement(By.xpath("//span[text()='Registros']"));
+                ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("arguments[0].click();", registroSpan);
+                wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//select[option[contains(text(),'Seleccionar tipo de personal')]]")));
+                System.out.println("✅ Click JS en el apartado de Registro de Personal realizado y vista cargada");
+            } catch (Exception jsEx) {
+                throw new RuntimeException("No se pudo hacer click en el apartado de Registro de Personal: " + jsEx.getMessage());
+            }
         }
     }
 
@@ -139,9 +150,26 @@ public class DatosPersonalesPage {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement select = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//select[option[contains(text(),'Seleccionar tipo de personal')]]")));
         select.click();
-        WebElement option = select.findElement(By.xpath(".//option[@value='PP']"));
+        String value = "";
+        switch (tipo) {
+            case "Profesor de Primaria":
+                value = "PP";
+                break;
+            case "Profesor de Secundaria":
+                value = "PS";
+                break;
+            case "Auxiliar":
+                value = "AUX";
+                break;
+            case "Personal Administrativo":
+                value = "ADM";
+                break;
+            default:
+                throw new AssertionError("Tipo de personal no soportado: " + tipo);
+        }
+        WebElement option = select.findElement(By.xpath(".//option[@value='" + value + "']"));
         option.click();
-        System.out.println("✅ Tipo de personal seleccionado: Profesor de Primaria");
+        System.out.println("✅ Tipo de personal seleccionado: " + tipo);
     }
 
     public void clickSeleccionarProfesorDePrimaria() {
@@ -189,5 +217,15 @@ public class DatosPersonalesPage {
             try { Thread.sleep(500); } catch (InterruptedException ignored) {}
         }
         throw new RuntimeException("El botón Buscar nunca se habilitó");
+    }
+
+    public void clickDivSeleccionarPersonalPorTexto(String textoDiv) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        // Buscar el div por el texto del span interno
+        WebElement div = wait.until(ExpectedConditions.elementToBeClickable(
+            By.xpath("//div[@id='SIASIS-SDU_Seccion-Consulta-Registros-Mensuales-Personal-Eventos-Prioritarios']//span[contains(text(), '" + textoDiv + "')]/ancestor::div[contains(@class,'cursor-pointer')]"))
+        );
+        div.click();
+        System.out.println("✅ Click en div: " + textoDiv);
     }
 }

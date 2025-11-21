@@ -172,4 +172,36 @@ public class DatosPersonalesStepDefinitions {
                 throw new AssertionError("Error al hacer click en el botón Buscar. " + error.getMessage());
             }
         }
+
+        @And("selecciono {string}")
+        public void seleccionoTipoPersonal(String tipoPersonal) {
+            try {
+                datosPersonalesSteps.seleccionarTipoPersonal(tipoPersonal);
+                DriverManager.screenShot();
+            } catch (AssertionError error) {
+                DriverManager.screenShot();
+                throw new AssertionError("Error al seleccionar tipo de personal: " + tipoPersonal + ". " + error.getMessage());
+            }
+        }
+
+        @And("completo el campo de búsqueda con datos válidos del personal")
+    public void completoCampoBusquedaPersonal(io.cucumber.java.Scenario scenario) {
+        try {
+            // Obtener el tipo de personal del escenario
+            String tipoPersonal = (String) scenario.getSourceTagNames().stream()
+                .filter(tag -> tag.startsWith("tipo_personal:"))
+                .map(tag -> tag.replace("tipo_personal:", ""))
+                .findFirst()
+                .orElse(null);
+            // Si no se encuentra por tag, intentar por variable de ejemplo
+            if (tipoPersonal == null && scenario.getName().contains("<tipo_personal>")) {
+                tipoPersonal = scenario.getName().replace("<tipo_personal>", "");
+            }
+            datosPersonalesSteps.completarBusquedaPersonal(tipoPersonal);
+            DriverManager.screenShot();
+        } catch (AssertionError error) {
+            DriverManager.screenShot();
+            throw new AssertionError("Error al completar el campo de búsqueda del personal. " + error.getMessage());
+        }
+    }
 }
