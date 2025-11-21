@@ -124,4 +124,52 @@ public class DatosPersonalesStepDefinitions {
             throw new AssertionError("Error al verificar que los datos originales son correctos. " + error.getMessage());
         }
     }
+
+    @When("doy click en el apartado de Registro de Personal")
+    public void doyClickEnElApartadoDeRegistroDePersonal() {
+        try {
+            datosPersonalesSteps.clickRegistroPersonal();
+            DriverManager.screenShot();
+        } catch (AssertionError error) {
+            DriverManager.screenShot();
+            throw new AssertionError("Error al hacer click en el apartado de Registro de Personal. " + error.getMessage());
+        }
+    }
+
+    @And("selecciono un profesor de primaria")
+    public void seleccionoUnProfesorDePrimaria() {
+        try {
+            datosPersonalesSteps.seleccionarProfesorDePrimaria();
+            DriverManager.screenShot();
+            
+        } catch (AssertionError error) {
+            DriverManager.screenShot();
+            throw new AssertionError("Error al seleccionar profesor de primaria. " + error.getMessage());
+        }
+        
+
+
+    }
+
+        @Then("se muestra una tabla con las asistencias del personal seleccionado")
+        public void seMuestraUnaTablaConLasAsistenciasDelPersonalSeleccionado() {
+            try {
+                datosPersonalesSteps.validarTablaAsistenciasVisible();
+                DriverManager.screenShot();
+            } catch (AssertionError error) {
+                DriverManager.screenShot();
+                throw new AssertionError("No se muestra la tabla de asistencias esperada. " + error.getMessage());
+            }
+        }
+
+        @And("doy click en el boton de Buscar")
+        public void doyClickEnElBotonDeBuscar() {
+            try {
+                datosPersonalesSteps.clickBotonBuscar();
+                DriverManager.screenShot();
+            } catch (AssertionError error) {
+                DriverManager.screenShot();
+                throw new AssertionError("Error al hacer click en el botón Buscar. " + error.getMessage());
+            }
+        }
 }

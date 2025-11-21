@@ -6,14 +6,13 @@ Feature: Edicion de Datos Personales por Rol
   Background:
     Given Estoy en la página de login
 
-  @SIASIS-TC-8 @happy @edicion-datos-personales-propios @SIU01 @API01 @RDP02 @directivo
+  @test1
   Scenario: Directivo edita sus propios datos personales
     Given Selecciono el rol DIRECTIVO
     And Ingreso mi nombre de usuario y contraseña
     Then Accedo al sistema como DIRECTIVO
-    When Estoy en la página de edición de perfil
-    And Edito mis datos personales con los valores aleatorios
-    Then Verifico que se han guardado los cambios
-    And Restauro los datos originales
-    Then verifico que los datos originales son correctos
+    When doy click en el apartado de Registro de Personal
+    And selecciono un profesor de primaria
+    And doy click en el boton de Buscar
+    Then se muestra una tabla con las asistencias del personal seleccionado
 

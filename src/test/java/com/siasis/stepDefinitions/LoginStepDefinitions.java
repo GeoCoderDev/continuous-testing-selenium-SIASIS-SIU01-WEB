@@ -44,6 +44,10 @@ public class LoginStepDefinitions {
             }
 
             loginSteps.selectRole(rol);
+            // Si el rol es DIRECTIVO, ingresar credenciales fijas aquí
+            if (rol == RolesDelSistema.DIRECTIVO) {
+                loginSteps.enterCredentialsDirectivo("director.asuncion8", "15430124");
+            }
             DriverManager.screenShot();
             System.out.println("✅ Rol seleccionado: " + rol.getDescripcion());
 
@@ -67,9 +71,14 @@ public class LoginStepDefinitions {
                 throw new AssertionError("No se ha seleccionado ningún rol antes de ingresar credenciales");
             }
 
-            loginSteps.enterCredentials();
+            // Si el rol es DIRECTIVO, no sobrescribir credenciales
+            if (rolActual == RolesDelSistema.DIRECTIVO) {
+                System.out.println("⚠️  Credenciales de DIRECTIVO ya ingresadas, se omite sobrescritura.");
+            } else {
+                loginSteps.enterCredentials();
+                System.out.println("✅ Credenciales ingresadas para rol: " + rolActual.getDescripcion());
+            }
             DriverManager.screenShot();
-            System.out.println("✅ Credenciales ingresadas para rol: " + rolActual.getDescripcion());
 
         } catch (AssertionError error) {
             DriverManager.screenShot();
