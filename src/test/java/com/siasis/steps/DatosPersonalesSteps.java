@@ -21,6 +21,18 @@ public class DatosPersonalesSteps {
         this.faker = new Faker();
     }
 
+        public void validarTablaAsistenciasVisible() {
+            try {
+                boolean tablaVisible = datosPersonalesPage.isTablaAsistenciasVisible();
+                if (!tablaVisible) {
+                    throw new AssertionError("La tabla de asistencias no está visible o no tiene los encabezados esperados.");
+                }
+                System.out.println("✅ Tabla de asistencias visible y correcta");
+            } catch (Exception e) {
+                throw new AssertionError("Error al validar la tabla de asistencias: " + e.getMessage());
+            }
+        }
+
     public void navigateToEditProfile() {
         try {
             datosPersonalesPage.navigateToEditProfile();
@@ -149,6 +161,76 @@ public class DatosPersonalesSteps {
 
         } catch (Exception e) {
             throw new AssertionError("Error al verificar que los datos originales son correctos: " + e.getMessage());
+        }
+    }
+
+    public void clickRegistroPersonal() {
+        try {
+            datosPersonalesPage.clickRegistroPersonal();
+        } catch (Exception e) {
+            throw new AssertionError("No se pudo hacer click en el apartado de Registro de Personal: " + e.getMessage());
+        }
+    }
+
+    public void seleccionarProfesorDePrimaria() {
+        try {
+            // 1. Seleccionar "Profesor de Primaria" en el select de tipo de personal
+            datosPersonalesPage.seleccionarTipoPersonal("Profesor de Primaria");
+            // 2. Click en el div de "Seleccionar Profesor de Primaria"
+            datosPersonalesPage.clickSeleccionarProfesorDePrimaria();
+            // 3. Seleccionar el primer elemento de la lista
+            datosPersonalesPage.seleccionarPrimerProfesorDeLista();
+            // 4. Seleccionar aleatoriamente un mes superior a junio
+            datosPersonalesPage.seleccionarMesAleatorioMayorAJunio();
+
+            // 5. Click en el botón de Buscar
+        } catch (Exception e) {
+            throw new AssertionError("Error en la selección de profesor de primaria y mes: " + e.getMessage());
+        }
+    }
+
+    public void clickBotonBuscar() {
+        try {
+            datosPersonalesPage.clickBotonBuscar();
+            datosPersonalesPage.clickBotonBuscar();
+        } catch (Exception e) {
+            throw new AssertionError("Error al hacer click en el botón Buscar: " + e.getMessage());
+        }
+    }
+
+    public void seleccionarTipoPersonal(String tipoPersonal) {
+        try {
+            datosPersonalesPage.seleccionarTipoPersonal(tipoPersonal);
+        } catch (Exception e) {
+            throw new AssertionError("Error al seleccionar tipo de personal: " + tipoPersonal + ". " + e.getMessage());
+        }
+    }
+
+    public void completarBusquedaPersonal(String tipoPersonal) {
+        try {
+            // Seleccionar el div correcto según el tipo de personal
+            String textoDiv = "";
+            switch (tipoPersonal) {
+                case "Profesor de Primaria":
+                    textoDiv = "Seleccionar Profesor de Primaria";
+                    break;
+                case "Profesor de Secundaria":
+                    textoDiv = "Seleccionar Profesor de Secundaria";
+                    break;
+                case "Auxiliar":
+                    textoDiv = "Seleccionar Auxiliar";
+                    break;
+                case "Personal Administrativo":
+                    textoDiv = "Seleccionar Personal Administrativo";
+                    break;
+                default:
+                    throw new AssertionError("Tipo de personal no soportado: " + tipoPersonal);
+            }
+            datosPersonalesPage.clickDivSeleccionarPersonalPorTexto(textoDiv);
+            datosPersonalesPage.seleccionarPrimerProfesorDeLista();
+            datosPersonalesPage.seleccionarMesAleatorioMayorAJunio();
+        } catch (Exception e) {
+            throw new AssertionError("Error al completar el campo de búsqueda del personal: " + e.getMessage());
         }
     }
 }

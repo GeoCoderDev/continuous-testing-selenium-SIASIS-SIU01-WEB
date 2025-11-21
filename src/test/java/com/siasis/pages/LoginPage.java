@@ -205,7 +205,7 @@ public class LoginPage {
     }
 
     /**
-     * Método para debug - muestra la configuración actual
+     * Método para debug - muestra la configuración current
      */
     public void printCurrentConfig() {
         configManager.printConfig();
@@ -235,6 +235,23 @@ public class LoginPage {
         for (RolesDelSistema rol : RolesDelSistema.values()) {
             System.out.println("  - " + rol.name() + ": " + rol.getDescripcion() +
                     " (botón: '" + rol.getTextoBotonFrontend() + "')");
+        }
+    }
+
+    public void enterCredentialsDirectivo(String username, String password) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        try {
+            WebElement userField = wait.until(ExpectedConditions.visibilityOfElementLocated(usernameField));
+            userField.clear();
+            userField.sendKeys(username);
+
+            WebElement passField = driver.findElement(passwordField);
+            passField.clear();
+            passField.sendKeys(password);
+
+            System.out.println("✅ Credenciales ingresadas correctamente para DIRECTIVO");
+        } catch (Exception e) {
+            throw new RuntimeException("❌ Error al ingresar credenciales para DIRECTIVO: " + e.getMessage());
         }
     }
 }

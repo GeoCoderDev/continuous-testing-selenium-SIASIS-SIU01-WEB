@@ -163,4 +163,13 @@ public class LoginSteps {
     public void printAvailableRoles() {
         LoginPage.printAvailableRoles();
     }
+
+    public void enterCredentialsDirectivo(String username, String password) {
+        try {
+            loginPage.enterCredentialsDirectivo(username, password);
+            System.out.println("✅ Credenciales ingresadas para DIRECTIVO: " + username);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al ingresar credenciales para DIRECTIVO: " + e.getMessage(), e);
+        }
+    }
 }
